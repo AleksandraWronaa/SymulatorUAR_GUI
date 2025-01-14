@@ -202,16 +202,19 @@ private:
     double dolnyLimit, gornyLimit;
     bool flagaPrzeciwNasyceniowa;
     //WartZadana* wartosc;
+    double blad;
+    double pochodna;
+    double wyjscie;
 
 public:
     PIDController(double kp, double ki, double kd, double dolnyLimit = -1.0, double gornyLimit = 1.0)
         : kp(kp), ki(ki), kd(kd), dolnyLimit(dolnyLimit), gornyLimit(gornyLimit),
-        calka(0.0), bladPoprzedzajacy(0.0), flagaPrzeciwNasyceniowa(true)
+        calka(0.0), bladPoprzedzajacy(0.0), flagaPrzeciwNasyceniowa(false)
     {
     }
     PIDController()
         : kp(0.0), ki(0.0), kd(0.0), dolnyLimit(-1.0), gornyLimit(1.0),
-        calka(0.0), bladPoprzedzajacy(0.0), flagaPrzeciwNasyceniowa(true)
+        calka(0.0), bladPoprzedzajacy(0.0), flagaPrzeciwNasyceniowa(false)
     {
     }
 
@@ -220,7 +223,10 @@ public:
     double get_kd() const{return kd;}
     double get_dolnyLimit() const{return dolnyLimit;}
     double get_gornyLimit() const{return gornyLimit;}
-
+    double getBlad() const{return blad*kp;}
+    double getCalka() const{return calka*ki;}
+    double getPochodna() const{return pochodna*kd;}
+    double getWyjscie() const{return wyjscie;}
     void ustawLimity(double nizszy, double wyzszy) {
         dolnyLimit = nizszy;
         gornyLimit = wyzszy;
@@ -232,7 +238,10 @@ public:
         ki = _ki;
         kd = _kd;
     }
-
+    void setFlagaPrzeciwnasyceniowa(bool flaga)
+    {
+        flagaPrzeciwNasyceniowa = flaga;
+    }
 
     void reset() {
         calka = 0.0;
@@ -240,11 +249,11 @@ public:
     }
 
     double oblicz(double ustawWartosc, double wartoscProcesu) {
-        double blad = ustawWartosc - wartoscProcesu;
+        blad = ustawWartosc - wartoscProcesu;
         calka += blad;
-        double pochodna = blad - bladPoprzedzajacy;
+        pochodna = blad - bladPoprzedzajacy;
         bladPoprzedzajacy = blad;
-        double wyjscie = kp * blad + ki * calka + kd * pochodna;
+        wyjscie = kp * blad + ki * calka + kd * pochodna;
         if (flagaPrzeciwNasyceniowa) {
             wyjscie = filtr(wyjscie, dolnyLimit, gornyLimit);
         }
@@ -292,7 +301,10 @@ public:
     {
         wartosc.setWart(rodzaj, max, okres);
     }
-
+    void setFiltr(bool filtr)
+    {
+        kontroler.setFlagaPrzeciwnasyceniowa(filtr);
+    }
     void zapiszPlik(const std::string& nazwaPlikuARX, const std::string& nazwaPlikuPID, const std::string& nazwaPlikuWartosc)
     {
         model.zapiszText(nazwaPlikuARX);
@@ -334,6 +346,10 @@ public:
     double get_kp() const{return kontroler.get_kp();}
     double get_ki() const{return kontroler.get_ki();}
     double get_kd() const{return kontroler.get_kd();}
+    double getCalka() const{return kontroler.getCalka();}
+    double getBlad() const{return kontroler.getBlad();}
+    double getWyjscie() const{return kontroler.getWyjscie();}
+    double getPochodna() const{return kontroler.getPochodna();}
     double get_dolnyLimit() const{return kontroler.get_dolnyLimit();}
     double get_gornyLimit() const{return kontroler.get_gornyLimit();}
     double get_lastA() const{return model.get_lastA();}
