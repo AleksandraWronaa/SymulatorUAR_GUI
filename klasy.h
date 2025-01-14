@@ -186,7 +186,7 @@ public:
 
     int get_rodzajLiczba() const { return (int)rodzaj;}
     double get_max() const{return max;}
-
+    int get_okres() const{return okres;}
 
 private:
     rodzajeWartosci rodzaj = rodzajeWartosci::skok;
@@ -336,7 +336,7 @@ public:
     double get_gornyLimit() const{return kontroler.get_gornyLimit();}
     double get_lastA() const{return model.get_lastA();}
     double get_lastB() const{return model.get_lastB();}
-
+    int get_okres() const{return wartosc.get_okres();}
 
 private:
     ARXModel model;

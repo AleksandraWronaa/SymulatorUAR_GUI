@@ -83,9 +83,7 @@ void Symulator::on_button_wczytaj_clicked()
     ui->spinbox_minimum->setValue(uklad.get_dolnyLimit());
     ui->spinbox_maksimum->setValue(uklad.get_gornyLimit());
     ui->spinbox_maksimumY->setValue(uklad.get_max());
-
-    //ui->spinbox_okres->setValue(uklad.get);   //tu dopisac bo idk pod jaka zmienna sie zapisuje okres
-    ui->spinbox_okres->setValue(0.01);
+    ui->spinbox_okres->setValue(uklad.get_okres());
     ui->list_WartoscZadana->setCurrentRow(uklad.get_rodzajLiczba());
 
 
