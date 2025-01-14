@@ -1,5 +1,9 @@
 #include "symulator.h"
 #include "ui_symulator.h"
+#include <QVBoxLayout>
+#include <QPixmap>
+#include <QPainter>
+
 
 Symulator::Symulator(QWidget *parent)
     : QMainWindow(parent)
@@ -16,6 +20,16 @@ Symulator::Symulator(QWidget *parent)
     timer->setInterval(100);
     ui->button_stop->setEnabled(false);
     ui->spinbox_interval->setValue(timer->interval());
+
+    ui->wykres->addGraph();
+    ui->wykres->xAxis->setLabel("Czas");
+    ui->wykres->xAxis->setRange(0,100);
+
+    ui->wykres->yAxis->setLabel("Wartosc");
+    ui->wykres->yAxis->setRange(0,uklad.get_max());
+
+
+
 }
 
 Symulator::~Symulator()
@@ -34,10 +48,15 @@ void Symulator::nextStep()
 {
     obecnaWartosc = uklad.symulacja(krok);
     krok++;
-    ui->label_wartosc->setNum(obecnaWartosc);
+    //ui->label_wartosc->setNum(obecnaWartosc);
     uklad.setARX(A,B,ui->spinbox_k->value());
     uklad.setPID(ui->spinbox_P->value(),ui->spinbox_I->value(),ui->spinbox_D->value(),ui->spinbox_minimum->value(),ui->spinbox_maksimum->value());
     uklad.setWartosc(WartoscZadana,ui->spinbox_maksimumY->value(),ui->spinbox_okres->value());
+
+    ui->wykres->graph(0)->addData(krok, obecnaWartosc);
+    if (krok>100)
+        ui->wykres->xAxis->setRange(krok-100,krok+100);
+    ui->wykres->replot();
 }
 
 void Symulator::on_spinbox_A_valueChanged(double value)
@@ -107,6 +126,7 @@ void Symulator::on_button_start_clicked()
     uklad.setPID(ui->spinbox_P->value(),ui->spinbox_I->value(),ui->spinbox_D->value(),ui->spinbox_minimum->value(),ui->spinbox_maksimum->value());
     uklad.setWartosc(WartoscZadana,ui->spinbox_maksimumY->value(),ui->spinbox_okres->value());
 
+
 }
 
 
@@ -123,4 +143,6 @@ void Symulator::on_spinbox_interval_valueChanged(double arg1)
 {
     timer->setInterval(arg1);
 }
+
+
 
