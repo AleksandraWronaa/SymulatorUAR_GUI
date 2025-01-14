@@ -39,6 +39,8 @@ private slots:
 
     void on_button_stop_clicked();
 
+    void on_spinbox_interval_valueChanged(double arg1);
+
 private:
     Ui::Symulator *ui;
     QTimer *timer = nullptr;

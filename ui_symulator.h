@@ -58,6 +58,9 @@ public:
     QPushButton *button_reset;
     QLabel *label_wartosc;
     QPushButton *button_stop;
+    QLabel *label_interval;
+    QDoubleSpinBox *spinbox_interval;
+    QLabel *label_ms;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -217,6 +220,25 @@ public:
         button_stop->setObjectName("button_stop");
         button_stop->setGeometry(QRect(360, 340, 121, 41));
         button_stop->setFont(font);
+        label_interval = new QLabel(centralwidget);
+        label_interval->setObjectName("label_interval");
+        label_interval->setGeometry(QRect(850, 350, 101, 20));
+        label_interval->setFont(font1);
+        label_interval->setTextFormat(Qt::AutoText);
+        label_interval->setAlignment(Qt::AlignCenter);
+        spinbox_interval = new QDoubleSpinBox(centralwidget);
+        spinbox_interval->setObjectName("spinbox_interval");
+        spinbox_interval->setGeometry(QRect(950, 350, 81, 29));
+        QFont font2;
+        font2.setPointSize(11);
+        font2.setBold(true);
+        spinbox_interval->setFont(font2);
+        spinbox_interval->setDecimals(0);
+        spinbox_interval->setMinimum(10.000000000000000);
+        spinbox_interval->setMaximum(10000.000000000000000);
+        label_ms = new QLabel(centralwidget);
+        label_ms->setObjectName("label_ms");
+        label_ms->setGeometry(QRect(870, 370, 49, 16));
         Symulator->setCentralWidget(centralwidget);
         menubar = new QMenuBar(Symulator);
         menubar->setObjectName("menubar");
@@ -254,6 +276,8 @@ public:
         button_reset->setText(QCoreApplication::translate("Symulator", "Reset", nullptr));
         label_wartosc->setText(QCoreApplication::translate("Symulator", "TextLabel", nullptr));
         button_stop->setText(QCoreApplication::translate("Symulator", "Stop", nullptr));
+        label_interval->setText(QCoreApplication::translate("Symulator", "Interwa\305\202", nullptr));
+        label_ms->setText(QCoreApplication::translate("Symulator", "(w ms)", nullptr));
     } // retranslateUi
 
 };

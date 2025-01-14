@@ -15,7 +15,7 @@ Symulator::Symulator(QWidget *parent)
     connect(timer, SIGNAL(timeout()),this,SLOT(nextStep()));
     timer->setInterval(100);
     ui->button_stop->setEnabled(false);
-
+    ui->spinbox_interval->setValue(timer->interval());
 }
 
 Symulator::~Symulator()
@@ -119,33 +119,10 @@ void Symulator::on_button_stop_clicked()
     timer->stop();
 }
 
-/*
-void Symulator::on_spinbox_k_valueChanged(double value)
+
+
+void Symulator::on_spinbox_interval_valueChanged(double arg1)
 {
-    uklad.setSzum(value);
+    timer->setInterval(arg1);
 }
 
-
-void Symulator::on_spinbox_maksimumY_valueChanged(double value)
-{
-    uklad.setMax(value);
-}
-
-
-void Symulator::on_spinbox_okres_valueChanged(double value)
-{
-    uklad.setOkres(value);
-}
-
-
-void Symulator::on_spinbox_minimum_valueChanged(double value)
-{
-    uklad.setDolnyLimit(value);
-}
-
-
-void Symulator::on_spinbox_maksimum_valueChanged(double value)
-{
-    uklad.setGornyLimit(value);
-}
-*/
