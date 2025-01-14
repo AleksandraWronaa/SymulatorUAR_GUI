@@ -103,7 +103,7 @@ public:
         // B.clear();
         // u_hist.clear();
         // y_hist.clear();
-        ARXModel();
+        ARXModel({0.0},{0.0},0.0);
     }
 
 
@@ -191,7 +191,7 @@ public:
     int get_okres() const{return okres;}
 
     void reset(){
-        setWart();
+        setWart(rodzajeWartosci::skok,0.0,0);
     }
 
 
@@ -251,7 +251,7 @@ public:
     }
 
     void reset() {
-        PIDController();
+        PIDController(0.0,0.0,0.0,0.0,0.0);
     }
 
     double oblicz(double ustawWartosc, double wartoscProcesu) {
