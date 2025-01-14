@@ -221,6 +221,7 @@ Makefile: Symulator_UAR.pro ../../../PC/Qt/6.5.3/mingw_64/mkspecs/win32-g++/qmak
 		../../../PC/Qt/6.5.3/mingw_64/mkspecs/features/yacc.prf \
 		../../../PC/Qt/6.5.3/mingw_64/mkspecs/features/lex.prf \
 		Symulator_UAR.pro \
+		../../../PC/Qt/6.5.3/mingw_64/lib/Qt6PrintSupport.prl \
 		../../../PC/Qt/6.5.3/mingw_64/lib/Qt6Widgets.prl \
 		../../../PC/Qt/6.5.3/mingw_64/lib/Qt6Gui.prl \
 		../../../PC/Qt/6.5.3/mingw_64/lib/Qt6Core.prl \
@@ -378,6 +379,7 @@ Makefile: Symulator_UAR.pro ../../../PC/Qt/6.5.3/mingw_64/mkspecs/win32-g++/qmak
 ../../../PC/Qt/6.5.3/mingw_64/mkspecs/features/yacc.prf:
 ../../../PC/Qt/6.5.3/mingw_64/mkspecs/features/lex.prf:
 Symulator_UAR.pro:
+../../../PC/Qt/6.5.3/mingw_64/lib/Qt6PrintSupport.prl:
 ../../../PC/Qt/6.5.3/mingw_64/lib/Qt6Widgets.prl:
 ../../../PC/Qt/6.5.3/mingw_64/lib/Qt6Gui.prl:
 ../../../PC/Qt/6.5.3/mingw_64/lib/Qt6Core.prl:
