@@ -99,10 +99,11 @@ public:
     }
     void reset()
     {
-        A.clear();
-        B.clear();
-        u_hist.clear();
-        y_hist.clear();
+       // A.clear();
+       // B.clear();
+       // u_hist.clear();
+       // y_hist.clear();
+        ARXModel();
     }
 
 };
@@ -188,6 +189,9 @@ public:
     double get_max() const{return max;}
     int get_okres() const{return okres;}
 
+    void reset(){
+        setWart();
+    }
 private:
     rodzajeWartosci rodzaj = rodzajeWartosci::skok;
     double min = -1, max = 1;
@@ -235,8 +239,7 @@ public:
 
 
     void reset() {
-        calka = 0.0;
-        bladPoprzedzajacy = 0.0;
+        PIDController();
     }
 
     double oblicz(double ustawWartosc, double wartoscProcesu) {
@@ -324,6 +327,7 @@ public:
     void reset(){
         kontroler.reset();
         model.reset();
+        wartosc.reset();
         wartoscProcesu = 0.0;
         obliczone = 0.0;
         wartoscZadana=0.0;

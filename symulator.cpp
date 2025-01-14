@@ -85,7 +85,7 @@ void Symulator::nextStep()
 
 void Symulator::on_spinbox_A_valueChanged(double value)
 {
-    A.clear();
+    //A.clear();
     A.push_back(value);
     //uklad.setA(A);
 }
@@ -93,7 +93,7 @@ void Symulator::on_spinbox_A_valueChanged(double value)
 
 void Symulator::on_spinbox_B_valueChanged(double value)
 {
-    B.clear();
+   // B.clear();
     B.push_back(value);
     //uklad.setB(B);
 }
