@@ -2,6 +2,7 @@
 #define SYMULATOR_H
 
 #include <QMainWindow>
+#include <QTimer>
 #include "klasy.h"
 
 QT_BEGIN_NAMESPACE
@@ -17,10 +18,10 @@ class Symulator : public QMainWindow
 public:
     Symulator(QWidget *parent = nullptr);
     ~Symulator();
-    void liczenie();
+    //void liczenie();
 private slots:
 
-
+    void nextStep();
 
     void on_spinbox_A_valueChanged(double value);
 
@@ -36,12 +37,18 @@ private slots:
 
     void on_button_start_clicked();
 
+    void on_button_stop_clicked();
+
+    void on_spinbox_interval_valueChanged(double arg1);
+
 private:
     Ui::Symulator *ui;
-
+    QTimer *timer = nullptr;
     UkladSterowania uklad;
     std::vector<double> A;
     std::vector<double> B;
     rodzajeWartosci WartoscZadana;
+    int krok = 0;
+    double obecnaWartosc;
 };
 #endif // SYMULATOR_H

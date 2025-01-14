@@ -44,6 +44,7 @@ public:
         dystrybucja = std::normal_distribution<double>(0.0, szum);
     }
 
+
     double krok(double input) {
         u_hist.pop_front();
         u_hist.push_back(input);
@@ -95,6 +96,13 @@ public:
         double mean, stddev;
         ifs >> mean >> stddev;
         dystrybucja = std::normal_distribution<double>(mean, stddev);
+    }
+    void reset()
+    {
+        //A.clear();
+        //B.clear();
+        u_hist.clear();
+        y_hist.clear();
     }
 
 };
@@ -178,7 +186,7 @@ public:
 
     int get_rodzajLiczba() const { return (int)rodzaj;}
     double get_max() const{return max;}
-
+    int get_okres() const{return okres;}
 
 private:
     rodzajeWartosci rodzaj = rodzajeWartosci::skok;
@@ -223,6 +231,7 @@ public:
         ki = _ki;
         kd = _kd;
     }
+
 
     void reset() {
         calka = 0.0;
@@ -272,14 +281,17 @@ public:
         kontroler.setKontroler(kp, ki, kd);
         kontroler.ustawLimity(dolnyLimit, gornyLimit);
     }
+
     void setARX(const std::vector<double>& a, const std::vector<double>& b, double szum = 0.01)
     {
         model.setModel(a, b, szum);
     }
+
     void setWartosc(rodzajeWartosci rodzaj, double max, int okres)
     {
         wartosc.setWart(rodzaj, max, okres);
     }
+
     void zapiszPlik(const std::string& nazwaPlikuARX, const std::string& nazwaPlikuPID, const std::string& nazwaPlikuWartosc)
     {
         model.zapiszText(nazwaPlikuARX);
@@ -292,26 +304,27 @@ public:
         kontroler.wczytajText(nazwaPlikuPID);
         wartosc.wczytajText(nazwaPlikuWartosc);
     }
-    std::vector<double> symulacja(int liczbaKrokow)
+    double symulacja(size_t krok)
     {
 
-        for (int i = 0; i < liczbaKrokow; ++i) {
-            wartoscZadana = wartosc.obliczWartosc(i);
-            double sygnalKontrolny = kontroler.oblicz(wartoscZadana, wartoscProcesu);
-            wartoscProcesu = model.krok(sygnalKontrolny);
-            /*
+        wartoscZadana = wartosc.obliczWartosc(krok);
+        double sygnalKontrolny = kontroler.oblicz(wartoscZadana, wartoscProcesu);
+        wartoscProcesu = model.krok(sygnalKontrolny);
+        /*
             std::cerr << "Krok: " << i
                 << " -> Sterowanie: " << sygnalKontrolny
                 << " Wyjscie: " << wartoscProcesu
                 << std::endl;
                 */
-            obliczone.push_back(wartoscProcesu);
-        }
+        obliczone = wartoscProcesu;
         return obliczone;
     }
 
     void reset(){
         kontroler.reset();
+        model.reset();
+        wartoscProcesu = 0.0;
+        obliczone = 0.0;
     }
 
     int get_rodzajLiczba() const { return wartosc.get_rodzajLiczba();}
@@ -323,7 +336,7 @@ public:
     double get_gornyLimit() const{return kontroler.get_gornyLimit();}
     double get_lastA() const{return model.get_lastA();}
     double get_lastB() const{return model.get_lastB();}
-
+    int get_okres() const{return wartosc.get_okres();}
 
 private:
     ARXModel model;
@@ -331,6 +344,6 @@ private:
     WartZadana wartosc;
     double wartoscProcesu = 0.0;
     double wartoscZadana = 0.0;
-    std::vector<double> obliczone;
+    double obliczone;
 };
 
