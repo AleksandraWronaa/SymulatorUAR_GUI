@@ -27,8 +27,11 @@ Symulator::Symulator(QWidget *parent)
     ui->wykres->addGraph();
     ui->wykres->addGraph();
     ui->wykres->graph(0)->setPen(QPen(Qt::blue));
+    ui->wykres->graph(0)->setName("Wyjście układu");
     ui->wykres->graph(1)->setPen(QPen(Qt::green));
+    ui->wykres->graph(1)->setName("Wartość zadana");
     ui->wykres->graph(2)->setPen(QPen(Qt::red));
+    ui->wykres->graph(2)->setName("Uchyb");
 
     ui->wykres->xAxis->setLabel("Czas");
     ui->wykres->xAxis->setRange(0,100);
@@ -42,9 +45,13 @@ Symulator::Symulator(QWidget *parent)
     ui->wykres_kontroler->addGraph();
     ui->wykres_kontroler->addGraph();
     ui->wykres_kontroler->graph(0)->setPen(QPen(Qt::blue));
+    ui->wykres_kontroler->graph(0)->setName("Wyjście kontrolera");
     ui->wykres_kontroler->graph(1)->setPen(QPen(Qt::green));
+    ui->wykres_kontroler->graph(1)->setName("Część Proporcjonalna");
     ui->wykres_kontroler->graph(2)->setPen(QPen(Qt::red));
+    ui->wykres_kontroler->graph(2)->setName("Część Całkująca");
     ui->wykres_kontroler->graph(3)->setPen(QPen(Qt::yellow));
+    ui->wykres_kontroler->graph(3)->setName("Część Różniczkująca");
 
     ui->wykres_kontroler->xAxis->setLabel("Czas");
     ui->wykres_kontroler->xAxis->setRange(0,100);

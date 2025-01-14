@@ -99,11 +99,11 @@ public:
     }
     void reset()
     {
-        // A.clear();
-        // B.clear();
-        // u_hist.clear();
-        // y_hist.clear();
-        ARXModel({0.0},{0.0},0.0);
+         A.clear();
+         B.clear();
+         u_hist.clear();
+         y_hist.clear();
+        //ARXModel({0.0},{0.0},0.0);
     }
 
 
@@ -251,7 +251,12 @@ public:
     }
 
     void reset() {
-        PIDController(0.0,0.0,0.0,0.0,0.0);
+        //PIDController(0.0,0.0,0.0,0.0,0.0);
+        calka = 0;
+        bladPoprzedzajacy = 0;
+        blad = 0;
+        pochodna = 0;
+        wyjscie = 0;
     }
 
     double oblicz(double ustawWartosc, double wartoscProcesu) {
