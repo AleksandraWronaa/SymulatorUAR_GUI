@@ -81,6 +81,17 @@ void Symulator::nextStep()
     if (krok>100)
         ui->wykres->xAxis->setRange(krok-100,krok+100);
     ui->wykres->replot();
+
+    ui->wykres_kontroler->graph(0)->addData(krok, uklad.getWyjscie());
+    ui->wykres_kontroler->graph(1)->addData(krok, uklad.getBlad());
+    ui->wykres_kontroler->graph(2)->addData(krok, uklad.getCalka());
+    ui->wykres_kontroler->graph(3)->addData(krok, uklad.getPochodna());
+
+
+    ui->wykres_kontroler->yAxis->setRange(uklad.get_max()*0.5*-1,uklad.get_max()*1.2);
+    if (krok>100)
+        ui->wykres_kontroler->xAxis->setRange(krok-100,krok+100);
+    ui->wykres_kontroler->replot();
 }
 
 void Symulator::on_spinbox_A_valueChanged(double value)
@@ -160,6 +171,18 @@ void Symulator::on_button_reset_clicked()
     ui->wykres->yAxis->setLabel("Wartosc");
     ui->wykres->yAxis->setRange(0,uklad.get_max());
     ui->wykres->replot();
+
+    ui->wykres_kontroler->graph(0)->data()->clear();
+    ui->wykres_kontroler->graph(1)->data()->clear();
+    ui->wykres_kontroler->graph(2)->data()->clear();
+    ui->wykres_kontroler->graph(3)->data()->clear();
+
+    ui->wykres_kontroler->xAxis->setLabel("Czas");
+    ui->wykres_kontroler->xAxis->setRange(0,100);
+
+    ui->wykres_kontroler->yAxis->setLabel("Wartosc");
+    ui->wykres_kontroler->yAxis->setRange(0,uklad.get_max());
+    ui->wykres_kontroler->replot();
 }
 
 
@@ -197,5 +220,11 @@ void Symulator::on_spinbox_interval_valueChanged(double arg1)
 void Symulator::on_spinbox_maksimumY_valueChanged(double arg1)
 {
         ui->wykres->yAxis->setRange(0,arg1+0.2*arg1);
+}
+
+
+void Symulator::on_checkBox_stateChanged(int arg1)
+{
+    uklad.setFiltr(arg1);
 }
 

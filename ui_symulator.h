@@ -11,6 +11,7 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QCheckBox>
 #include <QtWidgets/QDoubleSpinBox>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QLabel>
@@ -56,6 +57,7 @@ public:
     QLabel *label_minimum;
     QDoubleSpinBox *spinbox_minimum;
     QLabel *label_maksimum;
+    QCheckBox *checkBox;
     QPushButton *button_start;
     QPushButton *button_reset;
     QPushButton *button_stop;
@@ -190,24 +192,27 @@ public:
         groupBox_UstawieniaFiltra->setAlignment(Qt::AlignCenter);
         spinbox_maksimum = new QDoubleSpinBox(groupBox_UstawieniaFiltra);
         spinbox_maksimum->setObjectName("spinbox_maksimum");
-        spinbox_maksimum->setGeometry(QRect(130, 100, 81, 29));
+        spinbox_maksimum->setGeometry(QRect(130, 120, 81, 29));
         spinbox_maksimum->setMinimum(-99.989999999999995);
         label_minimum = new QLabel(groupBox_UstawieniaFiltra);
         label_minimum->setObjectName("label_minimum");
-        label_minimum->setGeometry(QRect(10, 50, 101, 20));
+        label_minimum->setGeometry(QRect(10, 70, 101, 20));
         label_minimum->setFont(font1);
         label_minimum->setTextFormat(Qt::AutoText);
         label_minimum->setAlignment(Qt::AlignCenter);
         spinbox_minimum = new QDoubleSpinBox(groupBox_UstawieniaFiltra);
         spinbox_minimum->setObjectName("spinbox_minimum");
-        spinbox_minimum->setGeometry(QRect(130, 50, 81, 29));
+        spinbox_minimum->setGeometry(QRect(130, 70, 81, 29));
         spinbox_minimum->setMinimum(-99.989999999999995);
         label_maksimum = new QLabel(groupBox_UstawieniaFiltra);
         label_maksimum->setObjectName("label_maksimum");
-        label_maksimum->setGeometry(QRect(10, 100, 111, 20));
+        label_maksimum->setGeometry(QRect(10, 120, 111, 20));
         label_maksimum->setFont(font1);
         label_maksimum->setTextFormat(Qt::AutoText);
         label_maksimum->setAlignment(Qt::AlignCenter);
+        checkBox = new QCheckBox(groupBox_UstawieniaFiltra);
+        checkBox->setObjectName("checkBox");
+        checkBox->setGeometry(QRect(50, 30, 121, 22));
         button_start = new QPushButton(centralwidget);
         button_start->setObjectName("button_start");
         button_start->setGeometry(QRect(510, 340, 121, 41));
@@ -241,10 +246,10 @@ public:
         label_ms->setGeometry(QRect(870, 370, 49, 16));
         wykres = new QCustomPlot(centralwidget);
         wykres->setObjectName("wykres");
-        wykres->setGeometry(QRect(30, 20, 371, 311));
+        wykres->setGeometry(QRect(30, 20, 461, 281));
         wykres_kontroler = new QCustomPlot(centralwidget);
         wykres_kontroler->setObjectName("wykres_kontroler");
-        wykres_kontroler->setGeometry(QRect(420, 20, 371, 311));
+        wykres_kontroler->setGeometry(QRect(530, 20, 441, 281));
         Symulator->setCentralWidget(centralwidget);
         menubar = new QMenuBar(Symulator);
         menubar->setObjectName("menubar");
@@ -278,6 +283,7 @@ public:
         groupBox_UstawieniaFiltra->setTitle(QCoreApplication::translate("Symulator", "Ustawienia filtra", nullptr));
         label_minimum->setText(QCoreApplication::translate("Symulator", "Minimum", nullptr));
         label_maksimum->setText(QCoreApplication::translate("Symulator", "Maksimum", nullptr));
+        checkBox->setText(QCoreApplication::translate("Symulator", "U\305\274y\304\207 filtra?", nullptr));
         button_start->setText(QCoreApplication::translate("Symulator", "Start", nullptr));
         button_reset->setText(QCoreApplication::translate("Symulator", "Reset", nullptr));
         button_stop->setText(QCoreApplication::translate("Symulator", "Stop", nullptr));

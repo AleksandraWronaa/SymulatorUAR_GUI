@@ -449,7 +449,7 @@
      <property name="geometry">
       <rect>
        <x>130</x>
-       <y>100</y>
+       <y>120</y>
        <width>81</width>
        <height>29</height>
       </rect>
@@ -462,7 +462,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>50</y>
+       <y>70</y>
        <width>101</width>
        <height>20</height>
       </rect>
@@ -487,7 +487,7 @@
      <property name="geometry">
       <rect>
        <x>130</x>
-       <y>50</y>
+       <y>70</y>
        <width>81</width>
        <height>29</height>
       </rect>
@@ -500,7 +500,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>100</y>
+       <y>120</y>
        <width>111</width>
        <height>20</height>
       </rect>
@@ -519,6 +519,19 @@
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkBox">
+     <property name="geometry">
+      <rect>
+       <x>50</x>
+       <y>30</y>
+       <width>121</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Użyć filtra?</string>
      </property>
     </widget>
    </widget>
@@ -644,18 +657,18 @@
      <rect>
       <x>30</x>
       <y>20</y>
-      <width>371</width>
-      <height>311</height>
+      <width>461</width>
+      <height>281</height>
      </rect>
     </property>
    </widget>
    <widget class="QCustomPlot" name="wykres_kontroler" native="true">
     <property name="geometry">
      <rect>
-      <x>420</x>
+      <x>530</x>
       <y>20</y>
-      <width>371</width>
-      <height>311</height>
+      <width>441</width>
+      <height>281</height>
      </rect>
     </property>
    </widget>
