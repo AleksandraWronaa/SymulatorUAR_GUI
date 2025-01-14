@@ -1,11 +1,13 @@
 #include "symulator.h"
 #include "ui_symulator.h"
+#include "QTimer"
 
 Symulator::Symulator(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::Symulator)
+    , ui(new Ui::Symulator),timer(new QTimer(this)), totalSteps(0), currentStep(0)
 {
     ui->setupUi(this);
+    connect(timer, &QTimer::timeout, this, &Symulator::simulateStep);
 
     QStringList WartoscZadana ={"Skok jednostkowy","Sinusoidalny","Sygnał prostokątny"};    //Ustawianie tekstu dla tabeli Wartość Zadana
     foreach(QString item, WartoscZadana){
@@ -84,9 +86,23 @@ void Symulator::on_button_reset_clicked()
 
 void Symulator::on_button_start_clicked()
 {
-    uklad.setARX(A,B,ui->spinbox_k->value());
-    uklad.setPID(ui->spinbox_P->value(),ui->spinbox_I->value(),ui->spinbox_D->value(),ui->spinbox_minimum->value(),ui->spinbox_maksimum->value());
-    uklad.setWartosc(WartoscZadana,ui->spinbox_maksimumY->value(),ui->spinbox_okres->value());
+    uklad.setPID(1.0, 0.1, 0.01, -10.0, 10.0);
+    uklad.setARX({0.5}, {0.2}, 0.01);
+    totalSteps = 100;
+    currentStep = 0;
+    timer->start(100);
+    //uklad.setARX(A,B,ui->spinbox_k->value());
+    //uklad.setPID(ui->spinbox_P->value(),ui->spinbox_I->value(),ui->spinbox_D->value(),ui->spinbox_minimum->value(),ui->spinbox_maksimum->value());
+   // uklad.setWartosc(WartoscZadana,ui->spinbox_maksimumY->value(),ui->spinbox_okres->value());
    // std::vector<double> wyniki = uklad.symulacja(1);
 }
 
+void Symulator::simulateStep() {
+    if (currentStep >= totalSteps) {
+        timer->stop();
+        return;
+    }
+
+    double result = uklad.symulacjaKrok(currentStep);
+    currentStep++;
+}
