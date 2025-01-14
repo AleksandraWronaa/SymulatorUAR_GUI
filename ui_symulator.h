@@ -21,6 +21,7 @@
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QWidget>
+#include "qcustomplot.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -57,11 +58,11 @@ public:
     QLabel *label_maksimum;
     QPushButton *button_start;
     QPushButton *button_reset;
-    QLabel *label_wartosc;
     QPushButton *button_stop;
     QLabel *label_interval;
     QDoubleSpinBox *spinbox_interval;
     QLabel *label_ms;
+    QCustomPlot *wykres;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -214,9 +215,6 @@ public:
         button_reset->setObjectName("button_reset");
         button_reset->setGeometry(QRect(660, 340, 121, 41));
         button_reset->setFont(font);
-        label_wartosc = new QLabel(centralwidget);
-        label_wartosc->setObjectName("label_wartosc");
-        label_wartosc->setGeometry(QRect(190, 110, 261, 61));
         button_stop = new QPushButton(centralwidget);
         button_stop->setObjectName("button_stop");
         button_stop->setGeometry(QRect(360, 340, 121, 41));
@@ -240,10 +238,13 @@ public:
         label_ms = new QLabel(centralwidget);
         label_ms->setObjectName("label_ms");
         label_ms->setGeometry(QRect(870, 370, 49, 16));
+        wykres = new QCustomPlot(centralwidget);
+        wykres->setObjectName("wykres");
+        wykres->setGeometry(QRect(30, 20, 931, 311));
         Symulator->setCentralWidget(centralwidget);
         menubar = new QMenuBar(Symulator);
         menubar->setObjectName("menubar");
-        menubar->setGeometry(QRect(0, 0, 1147, 25));
+        menubar->setGeometry(QRect(0, 0, 1147, 21));
         Symulator->setMenuBar(menubar);
         statusbar = new QStatusBar(Symulator);
         statusbar->setObjectName("statusbar");
@@ -275,7 +276,6 @@ public:
         label_maksimum->setText(QCoreApplication::translate("Symulator", "Maksimum", nullptr));
         button_start->setText(QCoreApplication::translate("Symulator", "Start", nullptr));
         button_reset->setText(QCoreApplication::translate("Symulator", "Reset", nullptr));
-        label_wartosc->setText(QCoreApplication::translate("Symulator", "TextLabel", nullptr));
         button_stop->setText(QCoreApplication::translate("Symulator", "Stop", nullptr));
         label_interval->setText(QCoreApplication::translate("Symulator", "Interwa\305\202", nullptr));
         label_ms->setText(QCoreApplication::translate("Symulator", "(w ms)", nullptr));

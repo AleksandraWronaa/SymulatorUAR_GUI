@@ -146,8 +146,8 @@ public:
         }
         else if (rodzaj == rodzajeWartosci::kwadrat)
         {
-            bool minMax = 0;
-            if (krok % okres/2 == 0)
+
+            if (krok % (okres/2) == 0)
             {
                 minMax = !minMax;
             }
@@ -192,6 +192,7 @@ private:
     rodzajeWartosci rodzaj = rodzajeWartosci::skok;
     double min = -1, max = 1;
     int okres;
+    bool minMax = 0;
 };
 
 class PIDController {
@@ -338,7 +339,7 @@ public:
     double get_lastA() const{return model.get_lastA();}
     double get_lastB() const{return model.get_lastB();}
     int get_okres() const{return wartosc.get_okres();}
-
+    double get_wartoscZadana() const{return wartoscZadana;}
 private:
     ARXModel model;
     PIDController kontroler;

@@ -1,5 +1,9 @@
 #include "symulator.h"
 #include "ui_symulator.h"
+#include <QVBoxLayout>
+#include <QPixmap>
+#include <QPainter>
+
 
 Symulator::Symulator(QWidget *parent)
     : QMainWindow(parent)
@@ -17,6 +21,21 @@ Symulator::Symulator(QWidget *parent)
     ui->button_stop->setEnabled(false);
     ui->button_reset->setEnabled(false);
     ui->spinbox_interval->setValue(timer->interval());
+
+    ui->wykres->addGraph();
+    ui->wykres->addGraph();
+    ui->wykres->addGraph();
+    ui->wykres->graph(1)->setPen(QPen(Qt::green));
+    ui->wykres->graph(2)->setPen(QPen(Qt::red));
+
+    ui->wykres->xAxis->setLabel("Czas");
+    ui->wykres->xAxis->setRange(0,100);
+
+    ui->wykres->yAxis->setLabel("Wartosc");
+    ui->wykres->yAxis->setRange(0,uklad.get_max());
+
+
+
 }
 
 Symulator::~Symulator()
@@ -35,10 +54,17 @@ void Symulator::nextStep()
 {
     obecnaWartosc = uklad.symulacja(krok);
     krok++;
-    ui->label_wartosc->setNum(obecnaWartosc);
+    //ui->label_wartosc->setNum(obecnaWartosc);
     uklad.setARX(A,B,ui->spinbox_k->value());
     uklad.setPID(ui->spinbox_P->value(),ui->spinbox_I->value(),ui->spinbox_D->value(),ui->spinbox_minimum->value(),ui->spinbox_maksimum->value());
     uklad.setWartosc(WartoscZadana,ui->spinbox_maksimumY->value(),ui->spinbox_okres->value());
+
+    ui->wykres->graph(0)->addData(krok, obecnaWartosc);
+    ui->wykres->graph(1)->addData(krok, uklad.get_wartoscZadana());
+    ui->wykres->graph(2)->addData(krok, abs(uklad.get_wartoscZadana()-obecnaWartosc));
+    if (krok>100)
+        ui->wykres->xAxis->setRange(krok-100,krok+100);
+    ui->wykres->replot();
 }
 
 void Symulator::on_spinbox_A_valueChanged(double value)
@@ -118,6 +144,7 @@ void Symulator::on_button_start_clicked()
     uklad.setPID(ui->spinbox_P->value(),ui->spinbox_I->value(),ui->spinbox_D->value(),ui->spinbox_minimum->value(),ui->spinbox_maksimum->value());
     uklad.setWartosc(WartoscZadana,ui->spinbox_maksimumY->value(),ui->spinbox_okres->value());
 
+
 }
 
 
@@ -133,5 +160,13 @@ void Symulator::on_button_stop_clicked()
 void Symulator::on_spinbox_interval_valueChanged(double arg1)
 {
     timer->setInterval(arg1);
+}
+
+
+
+
+void Symulator::on_spinbox_maksimumY_valueChanged(double arg1)
+{
+        ui->wykres->yAxis->setRange(0,arg1+0.2*arg1);
 }
 

@@ -4,12 +4,15 @@
 #include <QMainWindow>
 #include <QTimer>
 #include "klasy.h"
+#include "qcustomplot.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class Symulator;
 }
 QT_END_NAMESPACE
+
+
 
 class Symulator : public QMainWindow
 {
@@ -40,6 +43,9 @@ private slots:
     void on_button_stop_clicked();
 
     void on_spinbox_interval_valueChanged(double arg1);
+
+
+    void on_spinbox_maksimumY_valueChanged(double arg1);
 
 private:
     Ui::Symulator *ui;
