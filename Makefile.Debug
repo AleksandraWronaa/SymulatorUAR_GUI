@@ -11,16 +11,16 @@ EQ            = =
 
 ####### Compiler, tools and options
 
-CC            = cl
-CXX           = cl
-DEFINES       = -DUNICODE -D_UNICODE -DWIN32 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -DWIN64 -DQT_QML_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
-CFLAGS        = -nologo -Zc:wchar_t -FS -Zc:strictStrings -Zi -MDd -utf-8 -W3 -w44456 -w44457 -w44458 /Fddebug\Symulator_UAR.vc.pdb $(DEFINES)
-CXXFLAGS      = -nologo -Zc:wchar_t -FS -Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -permissive- -Zc:__cplusplus -Zc:externConstexpr -Zi -MDd -std:c++17 -utf-8 -W3 -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 -wd4577 -wd4467 -EHsc /Fddebug\Symulator_UAR.vc.pdb $(DEFINES)
-INCPATH       = -I. -I..\..\..\PC\Qt\6.5.3\msvc2019_64\include -I..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets -I..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui -I..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore -Idebug -I. -I/include -I..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\win32-msvc 
-LINKER        = link
-LFLAGS        = /NOLOGO /DYNAMICBASE /NXCOMPAT /DEBUG /SUBSYSTEM:WINDOWS "/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'"
-LIBS          = D:\PC\Qt\6.5.3\msvc2019_64\lib\Qt6Widgetsd.lib D:\PC\Qt\6.5.3\msvc2019_64\lib\Qt6Guid.lib D:\PC\Qt\6.5.3\msvc2019_64\lib\Qt6Cored.lib D:\PC\Qt\6.5.3\msvc2019_64\lib\Qt6EntryPointd.lib shell32.lib  
-QMAKE         = D:\PC\Qt\6.5.3\msvc2019_64\bin\qmake.exe
+CC            = gcc
+CXX           = g++
+DEFINES       = -DUNICODE -D_UNICODE -DWIN32 -DMINGW_HAS_SECURE_API=1 -DQT_QML_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_NEEDS_QMAIN
+CFLAGS        = -fno-keep-inline-dllexport -g -Wall -Wextra -Wextra $(DEFINES)
+CXXFLAGS      = -fno-keep-inline-dllexport -g -std=gnu++1z -Wall -Wextra -Wextra -fexceptions -mthreads $(DEFINES)
+INCPATH       = -I. -I../../../PC/Qt/6.5.3/mingw_64/include -I../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets -I../../../PC/Qt/6.5.3/mingw_64/include/QtGui -I../../../PC/Qt/6.5.3/mingw_64/include/QtCore -Idebug -I. -I/include -I../../../PC/Qt/6.5.3/mingw_64/mkspecs/win32-g++ 
+LINKER      =        g++
+LFLAGS        =        -Wl,-subsystem,windows -mthreads
+LIBS        =        D:\PC\Qt\6.5.3\mingw_64\lib\libQt6Widgets.a D:\PC\Qt\6.5.3\mingw_64\lib\libQt6Gui.a D:\PC\Qt\6.5.3\mingw_64\lib\libQt6Core.a -lmingw32 D:\PC\Qt\6.5.3\mingw_64\lib\libQt6EntryPoint.a -lshell32  
+QMAKE         = D:\PC\Qt\6.5.3\mingw_64\bin\qmake.exe
 DEL_FILE      = del
 CHK_DIR_EXISTS= if not exist
 MKDIR         = mkdir
@@ -30,8 +30,8 @@ COPY_DIR      = xcopy /s /q /y /i
 INSTALL_FILE  = copy /y
 INSTALL_PROGRAM = copy /y
 INSTALL_DIR   = xcopy /s /q /y /i
-QINSTALL      = D:\PC\Qt\6.5.3\msvc2019_64\bin\qmake.exe -install qinstall
-QINSTALL_PROGRAM = D:\PC\Qt\6.5.3\msvc2019_64\bin\qmake.exe -install qinstall -exe
+QINSTALL      = D:\PC\Qt\6.5.3\mingw_64\bin\qmake.exe -install qinstall
+QINSTALL_PROGRAM = D:\PC\Qt\6.5.3\mingw_64\bin\qmake.exe -install qinstall -exe
 DEL_FILE      = del
 SYMLINK       = $(QMAKE) -install ln -f -s
 DEL_DIR       = rmdir
@@ -52,9 +52,9 @@ OBJECTS_DIR   = debug
 
 SOURCES       = main.cpp \
 		symulator.cpp debug\moc_symulator.cpp
-OBJECTS       = debug\main.obj \
-		debug\symulator.obj \
-		debug\moc_symulator.obj
+OBJECTS       = debug/main.o \
+		debug/symulator.o \
+		debug/moc_symulator.o
 
 DIST          =  klasy.h \
 		symulator.h main.cpp \
@@ -64,75 +64,27 @@ DESTDIR        = debug\ #avoid trailing-slash linebreak
 TARGET         = Symulator_UAR.exe
 DESTDIR_TARGET = debug\Symulator_UAR.exe
 
-####### Implicit rules
-
-.SUFFIXES: .c .cpp .cc .cxx
-
-{.}.cpp{debug\}.obj::
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Fodebug\ @<<
-	$<
-<<
-
-{.}.cc{debug\}.obj::
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Fodebug\ @<<
-	$<
-<<
-
-{.}.cxx{debug\}.obj::
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Fodebug\ @<<
-	$<
-<<
-
-{.}.c{debug\}.obj::
-	$(CC) -c $(CFLAGS) $(INCPATH) -Fodebug\ @<<
-	$<
-<<
-
-{debug}.cpp{debug\}.obj::
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Fodebug\ @<<
-	$<
-<<
-
-{debug}.cc{debug\}.obj::
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Fodebug\ @<<
-	$<
-<<
-
-{debug}.cxx{debug\}.obj::
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Fodebug\ @<<
-	$<
-<<
-
-{debug}.c{debug\}.obj::
-	$(CC) -c $(CFLAGS) $(INCPATH) -Fodebug\ @<<
-	$<
-<<
-
 ####### Build rules
 
 first: all
-all: Makefile.Debug  debug\Symulator_UAR.exe
+all: Makefile.Debug  debug/Symulator_UAR.exe
 
-debug\Symulator_UAR.exe: D:\PC\Qt\6.5.3\msvc2019_64\lib\Qt6Widgetsd.lib D:\PC\Qt\6.5.3\msvc2019_64\lib\Qt6Guid.lib D:\PC\Qt\6.5.3\msvc2019_64\lib\Qt6Cored.lib D:\PC\Qt\6.5.3\msvc2019_64\lib\Qt6EntryPointd.lib ui_symulator.h $(OBJECTS) 
-	$(LINKER) $(LFLAGS) /MANIFEST:embed /OUT:$(DESTDIR_TARGET) @<<
-debug\main.obj debug\symulator.obj debug\moc_symulator.obj
-$(LIBS)
-<<
+debug/Symulator_UAR.exe: D:/PC/Qt/6.5.3/mingw_64/lib/libQt6Widgets.a D:/PC/Qt/6.5.3/mingw_64/lib/libQt6Gui.a D:/PC/Qt/6.5.3/mingw_64/lib/libQt6Core.a D:/PC/Qt/6.5.3/mingw_64/lib/libQt6EntryPoint.a ui_symulator.h $(OBJECTS) 
+	$(LINKER) $(LFLAGS) -o $(DESTDIR_TARGET) $(OBJECTS) $(LIBS)
 
 qmake: FORCE
-	@$(QMAKE) -o Makefile.Debug Symulator_UAR.pro -spec win32-msvc "CONFIG+=debug" "CONFIG+=qml_debug"
+	@$(QMAKE) -o Makefile.Debug Symulator_UAR.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug"
 
 qmake_all: FORCE
 
 dist:
-	$(ZIP) Symulator_UAR.zip $(SOURCES) $(DIST) Symulator_UAR.pro ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\features\spec_pre.prf ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\common\windows-desktop.conf ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\features\win32\windows_vulkan_sdk.prf ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\common\windows-vulkan.conf ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\common\msvc-desktop.conf ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\qconfig.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_ext_freetype.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_ext_libjpeg.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_ext_libpng.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_charts.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_charts_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_chartsqml.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_chartsqml_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_concurrent.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_concurrent_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_core.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_core_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_dbus.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_dbus_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_designer.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_designer_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_designercomponents_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_devicediscovery_support_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_entrypoint_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_example_icons_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_fb_support_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_freetype_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_gui.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_gui_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_harfbuzz_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_help.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_help_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_jpeg_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_labsanimation.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_labsanimation_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_labsfolderlistmodel.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_labsfolderlistmodel_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_labsqmlmodels.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_labsqmlmodels_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_labssettings.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_labssettings_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_labssharedimage.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_labssharedimage_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_labswavefrontmesh.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_labswavefrontmesh_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_linguist.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_linguist_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_network.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_network_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_opengl.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_opengl_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_openglwidgets.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_openglwidgets_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_packetprotocol_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_png_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_printsupport.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_printsupport_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_qml.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_qml_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_qmlcompiler_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_qmlcore.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_qmlcore_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_qmldebug_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_qmldom_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_qmlintegration.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_qmlintegration_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_qmllocalstorage.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_qmllocalstorage_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_qmlmodels.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_qmlmodels_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_qmltest.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_qmltest_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_qmltyperegistrar_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_qmlworkerscript.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_qmlworkerscript_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_qmlxmllistmodel.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_qmlxmllistmodel_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_quick.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_quick_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_quickcontrols2.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_quickcontrols2_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_quickcontrols2impl.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_quickcontrols2impl_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_quickcontrolstestutilsprivate_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_quickdialogs2.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_quickdialogs2_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_quickdialogs2quickimpl.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_quickdialogs2quickimpl_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_quickdialogs2utils.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_quickdialogs2utils_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_quickeffects_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_quicklayouts.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_quicklayouts_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_quickparticles_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_quickshapes_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_quicktemplates2.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_quicktemplates2_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_quicktestutilsprivate_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_quickwidgets.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_quickwidgets_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_sql.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_sql_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_svg.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_svg_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_svgwidgets.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_svgwidgets_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_testlib.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_testlib_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_tools_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_uiplugin.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_uitools.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_uitools_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_widgets.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_widgets_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_xml.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_xml_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\modules\qt_lib_zlib_private.pri ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\features\qt_functions.prf ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\features\qt_config.prf ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\win32-msvc\qmake.conf ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\features\spec_post.prf .qmake.stash ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\features\exclusive_builds.prf ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\common\msvc-version.conf ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\features\toolchain.prf ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\features\default_pre.prf ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\features\win32\default_pre.prf ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\features\resolve_config.prf ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\features\exclusive_builds_post.prf ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\features\default_post.prf ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\features\build_pass.prf ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\features\qml_debug.prf ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\features\entrypoint.prf ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\features\precompile_header.prf ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\features\warn_on.prf ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\features\qt.prf ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\features\resources_functions.prf ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\features\resources.prf ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\features\moc.prf ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\features\win32\opengl.prf ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\features\uic.prf ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\features\qmake_use.prf ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\features\file_copies.prf ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\features\win32\windows.prf ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\features\testcase_targets.prf ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\features\exceptions.prf ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\features\yacc.prf ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\features\lex.prf Symulator_UAR.pro ..\..\..\PC\Qt\6.5.3\msvc2019_64\lib\Qt6Widgetsd.prl ..\..\..\PC\Qt\6.5.3\msvc2019_64\lib\Qt6Guid.prl ..\..\..\PC\Qt\6.5.3\msvc2019_64\lib\Qt6Cored.prl ..\..\..\PC\Qt\6.5.3\msvc2019_64\lib\Qt6EntryPointd.prl    ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\features\data\dummy.cpp klasy.h symulator.h  main.cpp symulator.cpp symulator.ui    
+	$(ZIP) Symulator_UAR.zip $(SOURCES) $(DIST) Symulator_UAR.pro ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\features\spec_pre.prf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\features\device_config.prf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\common\sanitize.conf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\common\gcc-base.conf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\common\g++-base.conf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\features\win32\windows_vulkan_sdk.prf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\common\windows-vulkan.conf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\common\g++-win32.conf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\common\windows-desktop.conf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\qconfig.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_ext_freetype.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_ext_libjpeg.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_ext_libpng.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_charts.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_charts_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_chartsqml.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_chartsqml_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_concurrent.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_concurrent_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_core.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_core_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_dbus.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_dbus_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_designer.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_designer_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_designercomponents_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_devicediscovery_support_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_entrypoint_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_example_icons_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_fb_support_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_freetype_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_gui.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_gui_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_harfbuzz_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_help.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_help_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_jpeg_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_labsanimation.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_labsanimation_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_labsfolderlistmodel.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_labsfolderlistmodel_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_labsqmlmodels.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_labsqmlmodels_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_labssettings.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_labssettings_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_labssharedimage.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_labssharedimage_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_labswavefrontmesh.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_labswavefrontmesh_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_linguist.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_linguist_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_network.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_network_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_opengl.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_opengl_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_openglwidgets.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_openglwidgets_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_packetprotocol_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_png_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_printsupport.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_printsupport_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_qml.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_qml_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_qmlcompiler_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_qmlcore.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_qmlcore_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_qmldebug_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_qmldom_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_qmlintegration.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_qmlintegration_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_qmllocalstorage.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_qmllocalstorage_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_qmlmodels.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_qmlmodels_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_qmltest.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_qmltest_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_qmltyperegistrar_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_qmlworkerscript.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_qmlworkerscript_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_qmlxmllistmodel.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_qmlxmllistmodel_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_quick.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_quick_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2impl.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_quickcontrols2impl_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_quickcontrolstestutilsprivate_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_quickdialogs2.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_quickdialogs2_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_quickdialogs2quickimpl.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_quickdialogs2quickimpl_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_quickdialogs2utils.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_quickdialogs2utils_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_quickeffects_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_quicklayouts.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_quicklayouts_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_quickparticles_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_quickshapes_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_quicktemplates2.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_quicktemplates2_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_quicktestutilsprivate_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_quickwidgets.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_quickwidgets_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_sql.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_sql_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_svg.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_svg_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_svgwidgets.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_svgwidgets_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_testlib.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_testlib_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_tools_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_uiplugin.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_uitools.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_uitools_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_widgets.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_widgets_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_xml.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_xml_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\modules\qt_lib_zlib_private.pri ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\features\qt_functions.prf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\features\qt_config.prf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\win32-g++\qmake.conf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\features\spec_post.prf .qmake.stash ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\features\exclusive_builds.prf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\features\toolchain.prf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\features\default_pre.prf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\features\win32\default_pre.prf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\features\resolve_config.prf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\features\exclusive_builds_post.prf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\features\default_post.prf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\features\build_pass.prf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\features\qml_debug.prf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\features\entrypoint.prf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\features\precompile_header.prf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\features\warn_on.prf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\features\qt.prf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\features\resources_functions.prf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\features\resources.prf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\features\moc.prf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\features\win32\opengl.prf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\features\uic.prf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\features\qmake_use.prf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\features\file_copies.prf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\features\win32\windows.prf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\features\testcase_targets.prf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\features\exceptions.prf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\features\yacc.prf ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\features\lex.prf Symulator_UAR.pro ..\..\..\PC\Qt\6.5.3\mingw_64\lib\Qt6Widgets.prl ..\..\..\PC\Qt\6.5.3\mingw_64\lib\Qt6Gui.prl ..\..\..\PC\Qt\6.5.3\mingw_64\lib\Qt6Core.prl ..\..\..\PC\Qt\6.5.3\mingw_64\lib\Qt6EntryPoint.prl    ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\features\data\dummy.cpp klasy.h symulator.h  main.cpp symulator.cpp symulator.ui    
 
 clean: compiler_clean 
-	-$(DEL_FILE) debug\main.obj debug\symulator.obj debug\moc_symulator.obj
-	-$(DEL_FILE) debug\Symulator_UAR.vc.pdb debug\Symulator_UAR.ilk debug\Symulator_UAR.idb
+	-$(DEL_FILE) debug\main.o debug\symulator.o debug\moc_symulator.o
 
 distclean: clean 
-	-$(DEL_FILE) .qmake.stash debug\Symulator_UAR.pdb
+	-$(DEL_FILE) .qmake.stash
 	-$(DEL_FILE) $(DESTDIR_TARGET)
 	-$(DEL_FILE) Makefile.Debug
 
@@ -148,182 +100,182 @@ compiler_no_pch_compiler_make_all:
 compiler_no_pch_compiler_clean:
 compiler_rcc_make_all:
 compiler_rcc_clean:
-compiler_moc_predefs_make_all: debug\moc_predefs.h
+compiler_moc_predefs_make_all: debug/moc_predefs.h
 compiler_moc_predefs_clean:
 	-$(DEL_FILE) debug\moc_predefs.h
-debug\moc_predefs.h: ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\features\data\dummy.cpp
-	cl -BxD:\PC\Qt\6.5.3\msvc2019_64\bin\qmake.exe -nologo -Zc:wchar_t -FS -Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -permissive- -Zc:__cplusplus -Zc:externConstexpr -Zi -MDd -std:c++17 -utf-8 -W3 -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 -wd4577 -wd4467 -E ..\..\..\PC\Qt\6.5.3\msvc2019_64\mkspecs\features\data\dummy.cpp 2>NUL >debug\moc_predefs.h
+debug/moc_predefs.h: ../../../PC/Qt/6.5.3/mingw_64/mkspecs/features/data/dummy.cpp
+	g++ -fno-keep-inline-dllexport -g -std=gnu++1z -Wall -Wextra -Wextra -dM -E -o debug\moc_predefs.h ..\..\..\PC\Qt\6.5.3\mingw_64\mkspecs\features\data\dummy.cpp
 
-compiler_moc_header_make_all: debug\moc_symulator.cpp
+compiler_moc_header_make_all: debug/moc_symulator.cpp
 compiler_moc_header_clean:
 	-$(DEL_FILE) debug\moc_symulator.cpp
-debug\moc_symulator.cpp: symulator.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\QMainWindow \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qmainwindow.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qtwidgetsglobal.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qtguiglobal.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qglobal.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtversionchecks.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qconfig.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtcore-config.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtconfigmacros.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtcoreexports.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtpreprocessorsupport.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtnoop.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qsystemdetection.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qprocessordetection.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qcompilerdetection.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qassert.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtypes.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtclasshelpermacros.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtversion.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtypeinfo.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qcontainerfwd.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qsysinfo.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qlogging.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qflags.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qcompare_impl.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qatomic.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qbasicatomic.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qatomic_cxx11.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qgenericatomic.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qconstructormacros.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qdarwinhelpers.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qexceptionhandling.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qforeach.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtdeprecationmarkers.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qttypetraits.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qfunctionpointer.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qglobalstatic.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qmalloc.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qminmax.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qnumeric.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qoverload.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qswap.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtenvironmentvariables.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtresource.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qttranslation.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qversiontagging.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qtgui-config.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qtguiexports.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qtwidgets-config.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qtwidgetsexports.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qwidget.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qwindowdefs.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qobjectdefs.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qnamespace.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtmetamacros.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qobjectdefs_impl.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qwindowdefs_win.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qobject.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qstring.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qchar.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qstringview.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qbytearray.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qrefcount.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qarraydata.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qpair.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qarraydatapointer.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qarraydataops.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qcontainertools_impl.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qxptype_traits.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qbytearrayalgorithms.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qbytearrayview.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qstringfwd.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\q20type_traits.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qstringliteral.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qstringalgorithms.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qanystringview.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qutf8stringview.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qstringtokenizer.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qstringbuilder.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qlist.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qhashfunctions.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qiterator.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qbytearraylist.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qstringlist.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qalgorithms.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qstringmatcher.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qcoreevent.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qscopedpointer.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qmetatype.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qcompare.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qdatastream.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qiodevicebase.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qfloat16.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qmath.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qiterable.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qmetacontainer.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qcontainerinfo.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtaggedpointer.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qscopeguard.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qobject_impl.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qbindingstorage.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qmargins.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qaction.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qkeysequence.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qicon.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qsize.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qpixmap.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qpaintdevice.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qrect.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qpoint.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qcolor.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qrgb.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qrgba64.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qsharedpointer.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qshareddata.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qsharedpointer_impl.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qimage.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qpixelformat.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qtransform.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qpolygon.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qregion.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qline.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qvariant.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qdebug.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtextstream.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qstringconverter_base.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qcontiguouscache.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qmap.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qshareddata_impl.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qset.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qhash.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qvarlengtharray.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\q20memory.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qpalette.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qbrush.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qfont.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qfontmetrics.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qfontinfo.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qsizepolicy.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qcursor.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qbitmap.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qevent.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qiodevice.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qpointer.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qurl.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qeventpoint.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qvector2d.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qvectornd.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qpointingdevice.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qinputdevice.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qscreen.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\QList \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\QObject \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\QRect \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\QSize \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\QSizeF \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\QTransform \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qnativeinterface.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qtabwidget.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\QTimer \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtimer.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qbasictimer.h \
+debug/moc_symulator.cpp: symulator.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/QMainWindow \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qmainwindow.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qtwidgetsglobal.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qtguiglobal.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qglobal.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtversionchecks.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qconfig.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtcore-config.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtconfigmacros.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtcoreexports.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtpreprocessorsupport.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtnoop.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qsystemdetection.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qprocessordetection.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qcompilerdetection.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qassert.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtypes.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtclasshelpermacros.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtversion.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtypeinfo.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qcontainerfwd.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qsysinfo.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qlogging.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qflags.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qcompare_impl.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qatomic.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qbasicatomic.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qatomic_cxx11.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qgenericatomic.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qconstructormacros.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qdarwinhelpers.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qexceptionhandling.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qforeach.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtdeprecationmarkers.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qttypetraits.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qfunctionpointer.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qglobalstatic.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qmalloc.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qminmax.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qnumeric.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qoverload.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qswap.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtenvironmentvariables.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtresource.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qttranslation.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qversiontagging.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qtgui-config.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qtguiexports.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qtwidgets-config.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qtwidgetsexports.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qwidget.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qwindowdefs.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qobjectdefs.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qnamespace.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtmetamacros.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qobjectdefs_impl.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qwindowdefs_win.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qobject.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qstring.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qchar.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qstringview.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qbytearray.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qrefcount.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qarraydata.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qpair.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qarraydatapointer.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qarraydataops.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qcontainertools_impl.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qxptype_traits.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qbytearrayalgorithms.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qbytearrayview.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qstringfwd.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/q20type_traits.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qstringliteral.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qstringalgorithms.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qanystringview.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qutf8stringview.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qstringtokenizer.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qstringbuilder.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qlist.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qhashfunctions.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qiterator.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qbytearraylist.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qstringlist.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qalgorithms.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qstringmatcher.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qcoreevent.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qscopedpointer.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qmetatype.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qcompare.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qdatastream.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qiodevicebase.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qfloat16.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qmath.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qiterable.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qmetacontainer.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qcontainerinfo.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtaggedpointer.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qscopeguard.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qobject_impl.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qbindingstorage.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qmargins.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qaction.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qkeysequence.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qicon.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qsize.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qpixmap.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qpaintdevice.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qrect.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qpoint.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qcolor.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qrgb.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qrgba64.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qsharedpointer.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qshareddata.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qsharedpointer_impl.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qimage.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qpixelformat.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qtransform.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qpolygon.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qregion.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qline.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qvariant.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qdebug.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtextstream.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qstringconverter_base.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qcontiguouscache.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qmap.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qshareddata_impl.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qset.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qhash.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qvarlengtharray.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/q20memory.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qpalette.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qbrush.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qfont.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qfontmetrics.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qfontinfo.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qsizepolicy.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qcursor.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qbitmap.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qevent.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qiodevice.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qpointer.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qurl.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qeventpoint.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qvector2d.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qvectornd.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qpointingdevice.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qinputdevice.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qscreen.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/QList \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/QObject \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/QRect \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/QSize \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/QSizeF \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/QTransform \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qnativeinterface.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qtabwidget.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/QTimer \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtimer.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qbasictimer.h \
 		klasy.h \
-		debug\moc_predefs.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\bin\moc.exe
-	D:\PC\Qt\6.5.3\msvc2019_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include D:/github/1/SymulatorUAR_GUI/debug/moc_predefs.h -ID:/PC/Qt/6.5.3/msvc2019_64/mkspecs/win32-msvc -ID:/github/1/SymulatorUAR_GUI -ID:/PC/Qt/6.5.3/msvc2019_64/include -ID:/PC/Qt/6.5.3/msvc2019_64/include/QtWidgets -ID:/PC/Qt/6.5.3/msvc2019_64/include/QtGui -ID:/PC/Qt/6.5.3/msvc2019_64/include/QtCore -I"C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.41.34120\include" -I"C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.41.34120\ATLMFC\include" -I"C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\VS\include" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.22621.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\10\\include\10.0.22621.0\\um" -I"C:\Program Files (x86)\Windows Kits\10\\include\10.0.22621.0\\shared" -I"C:\Program Files (x86)\Windows Kits\10\\include\10.0.22621.0\\winrt" -I"C:\Program Files (x86)\Windows Kits\10\\include\10.0.22621.0\\cppwinrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.8\include\um" symulator.h -o debug\moc_symulator.cpp
+		debug/moc_predefs.h \
+		../../../PC/Qt/6.5.3/mingw_64/bin/moc.exe
+	D:\PC\Qt\6.5.3\mingw_64\bin\moc.exe $(DEFINES) --include D:/github/1/SymulatorUAR_GUI/debug/moc_predefs.h -ID:/PC/Qt/6.5.3/mingw_64/mkspecs/win32-g++ -ID:/github/1/SymulatorUAR_GUI -ID:/PC/Qt/6.5.3/mingw_64/include -ID:/PC/Qt/6.5.3/mingw_64/include/QtWidgets -ID:/PC/Qt/6.5.3/mingw_64/include/QtGui -ID:/PC/Qt/6.5.3/mingw_64/include/QtCore -I"C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.41.34120\include" -I"C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.41.34120\ATLMFC\include" -I"C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\VS\include" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.22621.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\10\\include\10.0.22621.0\\um" -I"C:\Program Files (x86)\Windows Kits\10\\include\10.0.22621.0\\shared" -I"C:\Program Files (x86)\Windows Kits\10\\include\10.0.22621.0\\winrt" -I"C:\Program Files (x86)\Windows Kits\10\\include\10.0.22621.0\\cppwinrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.8\include\um" symulator.h -o debug\moc_symulator.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -333,8 +285,8 @@ compiler_uic_make_all: ui_symulator.h
 compiler_uic_clean:
 	-$(DEL_FILE) ui_symulator.h
 ui_symulator.h: symulator.ui \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\bin\uic.exe
-	D:\PC\Qt\6.5.3\msvc2019_64\bin\uic.exe symulator.ui -o ui_symulator.h
+		../../../PC/Qt/6.5.3/mingw_64/bin/uic.exe
+	D:\PC\Qt\6.5.3\mingw_64\bin\uic.exe symulator.ui -o ui_symulator.h
 
 compiler_yacc_decl_make_all:
 compiler_yacc_decl_clean:
@@ -348,418 +300,422 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_ui
 
 ####### Compile
 
-debug\main.obj: main.cpp symulator.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\QMainWindow \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qmainwindow.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qtwidgetsglobal.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qtguiglobal.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qglobal.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtversionchecks.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qconfig.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtcore-config.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtconfigmacros.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtcoreexports.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtpreprocessorsupport.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtnoop.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qsystemdetection.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qprocessordetection.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qcompilerdetection.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qassert.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtypes.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtclasshelpermacros.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtversion.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtypeinfo.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qcontainerfwd.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qsysinfo.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qlogging.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qflags.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qcompare_impl.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qatomic.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qbasicatomic.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qatomic_cxx11.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qgenericatomic.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qconstructormacros.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qdarwinhelpers.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qexceptionhandling.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qforeach.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtdeprecationmarkers.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qttypetraits.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qfunctionpointer.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qglobalstatic.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qmalloc.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qminmax.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qnumeric.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qoverload.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qswap.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtenvironmentvariables.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtresource.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qttranslation.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qversiontagging.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qtgui-config.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qtguiexports.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qtwidgets-config.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qtwidgetsexports.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qwidget.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qwindowdefs.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qobjectdefs.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qnamespace.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtmetamacros.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qobjectdefs_impl.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qwindowdefs_win.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qobject.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qstring.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qchar.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qstringview.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qbytearray.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qrefcount.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qarraydata.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qpair.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qarraydatapointer.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qarraydataops.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qcontainertools_impl.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qxptype_traits.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qbytearrayalgorithms.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qbytearrayview.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qstringfwd.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\q20type_traits.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qstringliteral.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qstringalgorithms.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qanystringview.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qutf8stringview.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qstringtokenizer.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qstringbuilder.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qlist.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qhashfunctions.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qiterator.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qbytearraylist.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qstringlist.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qalgorithms.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qstringmatcher.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qcoreevent.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qscopedpointer.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qmetatype.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qcompare.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qdatastream.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qiodevicebase.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qfloat16.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qmath.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qiterable.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qmetacontainer.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qcontainerinfo.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtaggedpointer.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qscopeguard.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qobject_impl.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qbindingstorage.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qmargins.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qaction.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qkeysequence.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qicon.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qsize.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qpixmap.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qpaintdevice.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qrect.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qpoint.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qcolor.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qrgb.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qrgba64.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qsharedpointer.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qshareddata.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qsharedpointer_impl.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qimage.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qpixelformat.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qtransform.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qpolygon.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qregion.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qline.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qvariant.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qdebug.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtextstream.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qstringconverter_base.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qcontiguouscache.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qmap.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qshareddata_impl.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qset.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qhash.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qvarlengtharray.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\q20memory.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qpalette.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qbrush.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qfont.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qfontmetrics.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qfontinfo.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qsizepolicy.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qcursor.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qbitmap.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qevent.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qiodevice.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qpointer.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qurl.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qeventpoint.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qvector2d.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qvectornd.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qpointingdevice.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qinputdevice.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qscreen.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\QList \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\QObject \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\QRect \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\QSize \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\QSizeF \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\QTransform \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qnativeinterface.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qtabwidget.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\QTimer \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtimer.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qbasictimer.h \
+debug/main.o: main.cpp symulator.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/QMainWindow \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qmainwindow.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qtwidgetsglobal.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qtguiglobal.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qglobal.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtversionchecks.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qconfig.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtcore-config.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtconfigmacros.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtcoreexports.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtpreprocessorsupport.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtnoop.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qsystemdetection.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qprocessordetection.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qcompilerdetection.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qassert.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtypes.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtclasshelpermacros.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtversion.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtypeinfo.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qcontainerfwd.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qsysinfo.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qlogging.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qflags.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qcompare_impl.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qatomic.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qbasicatomic.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qatomic_cxx11.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qgenericatomic.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qconstructormacros.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qdarwinhelpers.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qexceptionhandling.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qforeach.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtdeprecationmarkers.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qttypetraits.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qfunctionpointer.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qglobalstatic.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qmalloc.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qminmax.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qnumeric.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qoverload.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qswap.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtenvironmentvariables.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtresource.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qttranslation.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qversiontagging.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qtgui-config.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qtguiexports.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qtwidgets-config.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qtwidgetsexports.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qwidget.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qwindowdefs.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qobjectdefs.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qnamespace.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtmetamacros.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qobjectdefs_impl.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qwindowdefs_win.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qobject.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qstring.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qchar.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qstringview.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qbytearray.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qrefcount.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qarraydata.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qpair.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qarraydatapointer.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qarraydataops.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qcontainertools_impl.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qxptype_traits.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qbytearrayalgorithms.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qbytearrayview.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qstringfwd.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/q20type_traits.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qstringliteral.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qstringalgorithms.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qanystringview.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qutf8stringview.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qstringtokenizer.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qstringbuilder.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qlist.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qhashfunctions.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qiterator.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qbytearraylist.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qstringlist.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qalgorithms.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qstringmatcher.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qcoreevent.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qscopedpointer.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qmetatype.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qcompare.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qdatastream.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qiodevicebase.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qfloat16.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qmath.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qiterable.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qmetacontainer.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qcontainerinfo.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtaggedpointer.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qscopeguard.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qobject_impl.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qbindingstorage.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qmargins.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qaction.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qkeysequence.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qicon.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qsize.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qpixmap.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qpaintdevice.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qrect.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qpoint.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qcolor.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qrgb.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qrgba64.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qsharedpointer.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qshareddata.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qsharedpointer_impl.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qimage.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qpixelformat.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qtransform.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qpolygon.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qregion.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qline.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qvariant.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qdebug.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtextstream.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qstringconverter_base.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qcontiguouscache.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qmap.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qshareddata_impl.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qset.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qhash.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qvarlengtharray.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/q20memory.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qpalette.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qbrush.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qfont.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qfontmetrics.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qfontinfo.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qsizepolicy.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qcursor.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qbitmap.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qevent.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qiodevice.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qpointer.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qurl.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qeventpoint.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qvector2d.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qvectornd.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qpointingdevice.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qinputdevice.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qscreen.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/QList \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/QObject \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/QRect \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/QSize \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/QSizeF \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/QTransform \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qnativeinterface.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qtabwidget.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/QTimer \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtimer.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qbasictimer.h \
 		klasy.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\QApplication \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qapplication.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qcoreapplication.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qeventloop.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qcoreapplication_platform.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qfuture.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qfutureinterface.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qmutex.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtsan_impl.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qresultstore.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qfuture_impl.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qthreadpool.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qthread.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qdeadlinetimer.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qelapsedtimer.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qrunnable.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qexception.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qpromise.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qguiapplication.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qinputmethod.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qlocale.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qguiapplication_platform.h
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/QApplication \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qapplication.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qcoreapplication.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qeventloop.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qcoreapplication_platform.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qfuture.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qfutureinterface.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qmutex.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtsan_impl.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qresultstore.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qfuture_impl.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qthreadpool.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qthread.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qdeadlinetimer.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qelapsedtimer.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qrunnable.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qexception.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qpromise.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qguiapplication.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qinputmethod.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qlocale.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qguiapplication_platform.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\main.o main.cpp
 
-debug\symulator.obj: symulator.cpp symulator.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\QMainWindow \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qmainwindow.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qtwidgetsglobal.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qtguiglobal.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qglobal.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtversionchecks.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qconfig.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtcore-config.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtconfigmacros.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtcoreexports.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtpreprocessorsupport.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtnoop.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qsystemdetection.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qprocessordetection.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qcompilerdetection.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qassert.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtypes.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtclasshelpermacros.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtversion.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtypeinfo.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qcontainerfwd.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qsysinfo.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qlogging.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qflags.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qcompare_impl.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qatomic.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qbasicatomic.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qatomic_cxx11.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qgenericatomic.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qconstructormacros.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qdarwinhelpers.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qexceptionhandling.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qforeach.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtdeprecationmarkers.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qttypetraits.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qfunctionpointer.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qglobalstatic.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qmalloc.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qminmax.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qnumeric.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qoverload.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qswap.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtenvironmentvariables.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtresource.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qttranslation.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qversiontagging.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qtgui-config.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qtguiexports.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qtwidgets-config.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qtwidgetsexports.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qwidget.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qwindowdefs.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qobjectdefs.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qnamespace.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtmetamacros.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qobjectdefs_impl.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qwindowdefs_win.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qobject.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qstring.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qchar.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qstringview.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qbytearray.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qrefcount.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qarraydata.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qpair.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qarraydatapointer.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qarraydataops.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qcontainertools_impl.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qxptype_traits.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qbytearrayalgorithms.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qbytearrayview.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qstringfwd.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\q20type_traits.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qstringliteral.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qstringalgorithms.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qanystringview.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qutf8stringview.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qstringtokenizer.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qstringbuilder.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qlist.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qhashfunctions.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qiterator.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qbytearraylist.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qstringlist.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qalgorithms.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qstringmatcher.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qcoreevent.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qscopedpointer.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qmetatype.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qcompare.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qdatastream.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qiodevicebase.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qfloat16.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qmath.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qiterable.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qmetacontainer.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qcontainerinfo.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtaggedpointer.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qscopeguard.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qobject_impl.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qbindingstorage.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qmargins.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qaction.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qkeysequence.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qicon.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qsize.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qpixmap.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qpaintdevice.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qrect.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qpoint.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qcolor.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qrgb.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qrgba64.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qsharedpointer.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qshareddata.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qsharedpointer_impl.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qimage.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qpixelformat.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qtransform.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qpolygon.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qregion.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qline.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qvariant.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qdebug.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtextstream.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qstringconverter_base.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qcontiguouscache.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qmap.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qshareddata_impl.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qset.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qhash.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qvarlengtharray.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\q20memory.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qpalette.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qbrush.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qfont.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qfontmetrics.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qfontinfo.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qsizepolicy.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qcursor.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qbitmap.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qevent.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qiodevice.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qpointer.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qurl.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qeventpoint.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qvector2d.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qvectornd.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qpointingdevice.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qinputdevice.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qscreen.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\QList \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\QObject \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\QRect \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\QSize \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\QSizeF \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\QTransform \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qnativeinterface.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qtabwidget.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\QTimer \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtimer.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qbasictimer.h \
+debug/symulator.o: symulator.cpp symulator.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/QMainWindow \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qmainwindow.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qtwidgetsglobal.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qtguiglobal.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qglobal.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtversionchecks.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qconfig.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtcore-config.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtconfigmacros.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtcoreexports.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtpreprocessorsupport.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtnoop.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qsystemdetection.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qprocessordetection.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qcompilerdetection.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qassert.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtypes.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtclasshelpermacros.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtversion.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtypeinfo.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qcontainerfwd.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qsysinfo.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qlogging.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qflags.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qcompare_impl.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qatomic.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qbasicatomic.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qatomic_cxx11.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qgenericatomic.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qconstructormacros.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qdarwinhelpers.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qexceptionhandling.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qforeach.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtdeprecationmarkers.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qttypetraits.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qfunctionpointer.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qglobalstatic.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qmalloc.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qminmax.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qnumeric.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qoverload.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qswap.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtenvironmentvariables.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtresource.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qttranslation.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qversiontagging.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qtgui-config.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qtguiexports.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qtwidgets-config.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qtwidgetsexports.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qwidget.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qwindowdefs.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qobjectdefs.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qnamespace.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtmetamacros.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qobjectdefs_impl.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qwindowdefs_win.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qobject.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qstring.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qchar.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qstringview.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qbytearray.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qrefcount.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qarraydata.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qpair.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qarraydatapointer.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qarraydataops.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qcontainertools_impl.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qxptype_traits.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qbytearrayalgorithms.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qbytearrayview.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qstringfwd.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/q20type_traits.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qstringliteral.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qstringalgorithms.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qanystringview.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qutf8stringview.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qstringtokenizer.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qstringbuilder.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qlist.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qhashfunctions.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qiterator.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qbytearraylist.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qstringlist.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qalgorithms.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qstringmatcher.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qcoreevent.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qscopedpointer.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qmetatype.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qcompare.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qdatastream.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qiodevicebase.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qfloat16.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qmath.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qiterable.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qmetacontainer.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qcontainerinfo.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtaggedpointer.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qscopeguard.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qobject_impl.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qbindingstorage.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qmargins.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qaction.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qkeysequence.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qicon.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qsize.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qpixmap.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qpaintdevice.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qrect.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qpoint.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qcolor.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qrgb.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qrgba64.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qsharedpointer.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qshareddata.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qsharedpointer_impl.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qimage.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qpixelformat.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qtransform.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qpolygon.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qregion.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qline.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qvariant.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qdebug.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtextstream.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qstringconverter_base.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qcontiguouscache.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qmap.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qshareddata_impl.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qset.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qhash.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qvarlengtharray.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/q20memory.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qpalette.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qbrush.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qfont.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qfontmetrics.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qfontinfo.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qsizepolicy.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qcursor.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qbitmap.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qevent.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qiodevice.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qpointer.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qurl.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qeventpoint.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qvector2d.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qvectornd.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qpointingdevice.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qinputdevice.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qscreen.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/QList \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/QObject \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/QRect \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/QSize \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/QSizeF \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/QTransform \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qnativeinterface.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qtabwidget.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/QTimer \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtimer.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qbasictimer.h \
 		klasy.h \
 		ui_symulator.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\QVariant \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\QApplication \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qapplication.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qcoreapplication.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qeventloop.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qcoreapplication_platform.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qfuture.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qfutureinterface.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qmutex.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qtsan_impl.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qresultstore.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qfuture_impl.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qthreadpool.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qthread.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qdeadlinetimer.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qelapsedtimer.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qrunnable.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qexception.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qpromise.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qguiapplication.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qinputmethod.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qlocale.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qguiapplication_platform.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\QDoubleSpinBox \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qspinbox.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qabstractspinbox.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qvalidator.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qregularexpression.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\QGroupBox \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qgroupbox.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qframe.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\QLabel \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qlabel.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qpicture.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtGui\qtextdocument.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\QListWidget \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qlistwidget.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qlistview.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qabstractitemview.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qabstractscrollarea.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qabstractitemmodel.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtCore\qitemselectionmodel.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qabstractitemdelegate.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qstyleoption.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qslider.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qabstractslider.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qstyle.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qtabbar.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qrubberband.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\QMenuBar \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qmenubar.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qmenu.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\QPushButton \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qpushbutton.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qabstractbutton.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\QStatusBar \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\qstatusbar.h \
-		..\..\..\PC\Qt\6.5.3\msvc2019_64\include\QtWidgets\QWidget
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/QVariant \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/QApplication \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qapplication.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qcoreapplication.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qeventloop.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qcoreapplication_platform.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qfuture.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qfutureinterface.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qmutex.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qtsan_impl.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qresultstore.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qfuture_impl.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qthreadpool.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qthread.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qdeadlinetimer.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qelapsedtimer.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qrunnable.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qexception.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qpromise.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qguiapplication.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qinputmethod.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qlocale.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qguiapplication_platform.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/QDoubleSpinBox \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qspinbox.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qabstractspinbox.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qvalidator.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qregularexpression.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/QGroupBox \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qgroupbox.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qframe.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/QLabel \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qlabel.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qpicture.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtGui/qtextdocument.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/QListWidget \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qlistwidget.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qlistview.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qabstractitemview.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qabstractscrollarea.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qabstractitemmodel.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtCore/qitemselectionmodel.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qabstractitemdelegate.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qstyleoption.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qslider.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qabstractslider.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qstyle.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qtabbar.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qrubberband.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/QMenuBar \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qmenubar.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qmenu.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/QPushButton \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qpushbutton.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qabstractbutton.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/QSpinBox \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/QStatusBar \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/qstatusbar.h \
+		../../../PC/Qt/6.5.3/mingw_64/include/QtWidgets/QWidget
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\symulator.o symulator.cpp
 
-debug\moc_symulator.obj: debug\moc_symulator.cpp 
+debug/moc_symulator.o: debug/moc_symulator.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\moc_symulator.o debug\moc_symulator.cpp
 
 ####### Install
 
@@ -768,4 +724,6 @@ install:  FORCE
 uninstall:  FORCE
 
 FORCE:
+
+.SUFFIXES:
 

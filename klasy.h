@@ -99,8 +99,8 @@ public:
     }
     void reset()
     {
-        //A.clear();
-        //B.clear();
+        A.clear();
+        B.clear();
         u_hist.clear();
         y_hist.clear();
     }
@@ -326,6 +326,7 @@ public:
         model.reset();
         wartoscProcesu = 0.0;
         obliczone = 0.0;
+        wartoscZadana=0.0;
     }
 
     int get_rodzajLiczba() const { return wartosc.get_rodzajLiczba();}

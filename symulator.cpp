@@ -19,6 +19,7 @@ Symulator::Symulator(QWidget *parent)
     connect(timer, SIGNAL(timeout()),this,SLOT(nextStep()));
     timer->setInterval(100);
     ui->button_stop->setEnabled(false);
+    ui->button_reset->setEnabled(false);
     ui->spinbox_interval->setValue(timer->interval());
 
     ui->wykres->addGraph();
@@ -118,14 +119,24 @@ void Symulator::on_button_wczytaj_clicked()
 
 void Symulator::on_button_reset_clicked()
 {
+    ui->button_start->setEnabled(true);
+    ui->button_stop->setEnabled(false);
+    ui->button_reset->setEnabled(false);
+    timer->stop();
+
     uklad.reset();
     krok = 0;
-    //dodac reset do wykresu
+
+    uklad.setARX(A,B,ui->spinbox_k->value());
+    uklad.setPID(ui->spinbox_P->value(),ui->spinbox_I->value(),ui->spinbox_D->value(),ui->spinbox_minimum->value(),ui->spinbox_maksimum->value());
+    uklad.setWartosc(WartoscZadana,ui->spinbox_maksimumY->value(),ui->spinbox_okres->value());
+
 }
 
 
 void Symulator::on_button_start_clicked()
 {
+    ui->button_reset->setEnabled(true);
     ui->button_start->setEnabled(false);
     ui->button_stop->setEnabled(true);
     timer->start();
