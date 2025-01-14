@@ -36,9 +36,13 @@ private slots:
 
     void on_button_start_clicked();
 
+    void simulateStep();
+
 private:
     Ui::Symulator *ui;
-
+    QTimer *timer;
+    int totalSteps;
+    int currentStep;
     UkladSterowania uklad;
     std::vector<double> A;
     std::vector<double> B;
