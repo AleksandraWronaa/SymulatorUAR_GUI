@@ -22,6 +22,11 @@ Symulator::Symulator(QWidget *parent)
     ui->spinbox_interval->setValue(timer->interval());
 
     ui->wykres->addGraph();
+    ui->wykres->addGraph();
+    ui->wykres->addGraph();
+    ui->wykres->graph(1)->setPen(QPen(Qt::green));
+    ui->wykres->graph(2)->setPen(QPen(Qt::red));
+
     ui->wykres->xAxis->setLabel("Czas");
     ui->wykres->xAxis->setRange(0,100);
 
@@ -54,6 +59,8 @@ void Symulator::nextStep()
     uklad.setWartosc(WartoscZadana,ui->spinbox_maksimumY->value(),ui->spinbox_okres->value());
 
     ui->wykres->graph(0)->addData(krok, obecnaWartosc);
+    ui->wykres->graph(1)->addData(krok, uklad.get_wartoscZadana());
+    ui->wykres->graph(2)->addData(krok, abs(uklad.get_wartoscZadana()-obecnaWartosc));
     if (krok>100)
         ui->wykres->xAxis->setRange(krok-100,krok+100);
     ui->wykres->replot();
@@ -145,4 +152,10 @@ void Symulator::on_spinbox_interval_valueChanged(double arg1)
 }
 
 
+
+
+void Symulator::on_spinbox_maksimumY_valueChanged(double arg1)
+{
+        ui->wykres->yAxis->setRange(0,arg1+0.2*arg1);
+}
 

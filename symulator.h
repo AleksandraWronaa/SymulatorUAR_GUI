@@ -45,6 +45,8 @@ private slots:
     void on_spinbox_interval_valueChanged(double arg1);
 
 
+    void on_spinbox_maksimumY_valueChanged(double arg1);
+
 private:
     Ui::Symulator *ui;
     QTimer *timer = nullptr;
