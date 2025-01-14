@@ -292,9 +292,18 @@ public:
         kontroler.wczytajText(nazwaPlikuPID);
         wartosc.wczytajText(nazwaPlikuWartosc);
     }
+
+    double symulacjaKrok(int krok)
+    {
+        wartoscZadana = wartosc.obliczWartosc(krok);
+        double sygnalKontrolny = kontroler.oblicz(wartoscZadana, wartoscProcesu);
+        wartoscProcesu = model.krok(sygnalKontrolny);
+        return wartoscProcesu;
+    }
+
     std::vector<double> symulacja(int liczbaKrokow)
     {
-
+        /*
         for (int i = 0; i < liczbaKrokow; ++i) {
             wartoscZadana = wartosc.obliczWartosc(i);
             double sygnalKontrolny = kontroler.oblicz(wartoscZadana, wartoscProcesu);
@@ -304,14 +313,20 @@ public:
                 << " -> Sterowanie: " << sygnalKontrolny
                 << " Wyjscie: " << wartoscProcesu
                 << std::endl;
-                */
-            obliczone.push_back(wartoscProcesu);
+
+            obliczone.push_back(wartoscProcesu); */
+
+        obliczone.clear(); // Wyczyszczenie wyników poprzedniej symulacji
+        for (int i = 0; i < liczbaKrokow; ++i) {
+            obliczone.push_back(symulacjaKrok(i)); // Symulacja krokowa
         }
         return obliczone;
     }
 
     void reset(){
         kontroler.reset();
+        wartoscProcesu = 0.0;
+        wartoscZadana = 0.0;
     }
 
     int get_rodzajLiczba() const { return wartosc.get_rodzajLiczba();}
