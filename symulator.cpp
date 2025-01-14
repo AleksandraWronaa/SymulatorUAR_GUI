@@ -3,7 +3,8 @@
 
 Symulator::Symulator(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::Symulator)
+    , ui(new Ui::Symulator),
+    timer(new QTimer(this))
 {
     ui->setupUi(this);
 
@@ -11,6 +12,9 @@ Symulator::Symulator(QWidget *parent)
     foreach(QString item, WartoscZadana){
         ui->list_WartoscZadana->addItem(item);
     }
+    connect(timer, SIGNAL(timeout()),this,SLOT(nextStep()));
+    timer->setInterval(100);
+    ui->button_stop->setEnabled(false);
 
 }
 
@@ -19,24 +23,36 @@ Symulator::~Symulator()
     delete ui;
 }
 
-void Symulator::liczenie(){
+//void Symulator::liczenie(){
+//    uklad.setARX(A,B,ui->spinbox_k->value());
+//    uklad.setPID(ui->spinbox_P->value(),ui->spinbox_I->value(),ui->spinbox_D->value(),ui->spinbox_minimum->value(),ui->spinbox_maksimum->value());
+//    uklad.setWartosc(WartoscZadana,ui->spinbox_maksimumY->value(),ui->spinbox_okres->value());
+   // std::vector<double> wyniki = uklad.symulacja(100);
+//}
+
+void Symulator::nextStep()
+{
+    obecnaWartosc = uklad.symulacja(krok);
+    krok++;
+    ui->label_wartosc->setNum(obecnaWartosc);
     uklad.setARX(A,B,ui->spinbox_k->value());
     uklad.setPID(ui->spinbox_P->value(),ui->spinbox_I->value(),ui->spinbox_D->value(),ui->spinbox_minimum->value(),ui->spinbox_maksimum->value());
     uklad.setWartosc(WartoscZadana,ui->spinbox_maksimumY->value(),ui->spinbox_okres->value());
-   // std::vector<double> wyniki = uklad.symulacja(100);
 }
-
-
 
 void Symulator::on_spinbox_A_valueChanged(double value)
 {
+    A.clear();
     A.push_back(value);
+    //uklad.setA(A);
 }
 
 
 void Symulator::on_spinbox_B_valueChanged(double value)
 {
+    B.clear();
     B.push_back(value);
+    //uklad.setB(B);
 }
 
 void Symulator::on_list_WartoscZadana_currentRowChanged(int currentRow)
@@ -44,6 +60,7 @@ void Symulator::on_list_WartoscZadana_currentRowChanged(int currentRow)
     if(currentRow==0) WartoscZadana=rodzajeWartosci::skok;
     else
     (currentRow==1)? WartoscZadana=rodzajeWartosci::sinus : WartoscZadana=rodzajeWartosci::kwadrat;
+    //uklad.setRodzaj(WartoscZadana);
 }
 
 
@@ -78,15 +95,57 @@ void Symulator::on_button_wczytaj_clicked()
 void Symulator::on_button_reset_clicked()
 {
     uklad.reset();
+    krok = 0;
     //dodac reset do wykresu
 }
 
 
 void Symulator::on_button_start_clicked()
 {
+    ui->button_start->setEnabled(false);
+    ui->button_stop->setEnabled(true);
+    timer->start();
     uklad.setARX(A,B,ui->spinbox_k->value());
     uklad.setPID(ui->spinbox_P->value(),ui->spinbox_I->value(),ui->spinbox_D->value(),ui->spinbox_minimum->value(),ui->spinbox_maksimum->value());
     uklad.setWartosc(WartoscZadana,ui->spinbox_maksimumY->value(),ui->spinbox_okres->value());
-   // std::vector<double> wyniki = uklad.symulacja(1);
+
 }
 
+
+void Symulator::on_button_stop_clicked()
+{
+    ui->button_start->setEnabled(true);
+    ui->button_stop->setEnabled(false);
+    timer->stop();
+}
+
+/*
+void Symulator::on_spinbox_k_valueChanged(double value)
+{
+    uklad.setSzum(value);
+}
+
+
+void Symulator::on_spinbox_maksimumY_valueChanged(double value)
+{
+    uklad.setMax(value);
+}
+
+
+void Symulator::on_spinbox_okres_valueChanged(double value)
+{
+    uklad.setOkres(value);
+}
+
+
+void Symulator::on_spinbox_minimum_valueChanged(double value)
+{
+    uklad.setDolnyLimit(value);
+}
+
+
+void Symulator::on_spinbox_maksimum_valueChanged(double value)
+{
+    uklad.setGornyLimit(value);
+}
+*/
