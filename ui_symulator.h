@@ -141,7 +141,7 @@ public:
         label_A->setAlignment(Qt::AlignCenter);
         label_k = new QLabel(groupBox_ARX);
         label_k->setObjectName("label_k");
-        label_k->setGeometry(QRect(40, 40, 31, 20));
+        label_k->setGeometry(QRect(20, 40, 51, 20));
         label_k->setFont(font1);
         label_k->setTextFormat(Qt::AutoText);
         label_k->setAlignment(Qt::AlignCenter);
@@ -275,7 +275,7 @@ public:
         label_I->setText(QCoreApplication::translate("Symulator", "I", nullptr));
         groupBox_ARX->setTitle(QCoreApplication::translate("Symulator", "ARX", nullptr));
         label_A->setText(QCoreApplication::translate("Symulator", "A", nullptr));
-        label_k->setText(QCoreApplication::translate("Symulator", "k", nullptr));
+        label_k->setText(QCoreApplication::translate("Symulator", "Szum", nullptr));
         label_B->setText(QCoreApplication::translate("Symulator", "B", nullptr));
         groupBox_WartoscZadana->setTitle(QCoreApplication::translate("Symulator", "Warto\305\233\304\207 Zadana", nullptr));
         label_maksimumY->setText(QCoreApplication::translate("Symulator", "Max Y", nullptr));

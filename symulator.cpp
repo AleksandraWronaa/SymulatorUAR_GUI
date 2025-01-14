@@ -22,6 +22,7 @@ Symulator::Symulator(QWidget *parent)
     ui->button_reset->setEnabled(false);
     ui->spinbox_interval->setValue(timer->interval());
 
+    ui->wykres->legend->setVisible(true);
     ui->wykres->addGraph();
     ui->wykres->addGraph();
     ui->wykres->addGraph();
@@ -35,6 +36,7 @@ Symulator::Symulator(QWidget *parent)
     ui->wykres->yAxis->setLabel("Wartosc");
     ui->wykres->yAxis->setRange(uklad.get_max()*0.5*-1,uklad.get_max());
 
+    ui->wykres_kontroler->legend->setVisible(true);
     ui->wykres_kontroler->addGraph();
     ui->wykres_kontroler->addGraph();
     ui->wykres_kontroler->addGraph();
