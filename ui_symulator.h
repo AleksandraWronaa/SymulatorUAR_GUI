@@ -18,6 +18,7 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QWidget>
 
@@ -48,7 +49,7 @@ public:
     QLabel *label_maksimumY;
     QDoubleSpinBox *spinbox_maksimumY;
     QLabel *label_okres;
-    QDoubleSpinBox *spinbox_okres;
+    QSpinBox *spinbox_okres;
     QGroupBox *groupBox_UstawieniaFiltra;
     QDoubleSpinBox *spinbox_maksimum;
     QLabel *label_minimum;
@@ -177,7 +178,7 @@ public:
         label_okres->setFont(font1);
         label_okres->setTextFormat(Qt::AutoText);
         label_okres->setAlignment(Qt::AlignCenter);
-        spinbox_okres = new QDoubleSpinBox(groupBox_WartoscZadana);
+        spinbox_okres = new QSpinBox(groupBox_WartoscZadana);
         spinbox_okres->setObjectName("spinbox_okres");
         spinbox_okres->setGeometry(QRect(290, 100, 81, 29));
         groupBox_UstawieniaFiltra = new QGroupBox(centralwidget);
@@ -242,7 +243,7 @@ public:
         Symulator->setCentralWidget(centralwidget);
         menubar = new QMenuBar(Symulator);
         menubar->setObjectName("menubar");
-        menubar->setGeometry(QRect(0, 0, 1147, 21));
+        menubar->setGeometry(QRect(0, 0, 1147, 25));
         Symulator->setMenuBar(menubar);
         statusbar = new QStatusBar(Symulator);
         statusbar->setObjectName("statusbar");
