@@ -63,6 +63,7 @@ public:
     QDoubleSpinBox *spinbox_interval;
     QLabel *label_ms;
     QCustomPlot *wykres;
+    QCustomPlot *wykres_kontroler;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -240,7 +241,10 @@ public:
         label_ms->setGeometry(QRect(870, 370, 49, 16));
         wykres = new QCustomPlot(centralwidget);
         wykres->setObjectName("wykres");
-        wykres->setGeometry(QRect(30, 20, 931, 311));
+        wykres->setGeometry(QRect(30, 20, 371, 311));
+        wykres_kontroler = new QCustomPlot(centralwidget);
+        wykres_kontroler->setObjectName("wykres_kontroler");
+        wykres_kontroler->setGeometry(QRect(420, 20, 371, 311));
         Symulator->setCentralWidget(centralwidget);
         menubar = new QMenuBar(Symulator);
         menubar->setObjectName("menubar");

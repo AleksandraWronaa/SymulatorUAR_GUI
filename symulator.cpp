@@ -25,6 +25,7 @@ Symulator::Symulator(QWidget *parent)
     ui->wykres->addGraph();
     ui->wykres->addGraph();
     ui->wykres->addGraph();
+    ui->wykres->graph(0)->setPen(QPen(Qt::blue));
     ui->wykres->graph(1)->setPen(QPen(Qt::green));
     ui->wykres->graph(2)->setPen(QPen(Qt::red));
 
@@ -32,8 +33,22 @@ Symulator::Symulator(QWidget *parent)
     ui->wykres->xAxis->setRange(0,100);
 
     ui->wykres->yAxis->setLabel("Wartosc");
-    ui->wykres->yAxis->setRange(0,uklad.get_max());
+    ui->wykres->yAxis->setRange(uklad.get_max()*0.5*-1,uklad.get_max());
 
+    ui->wykres_kontroler->addGraph();
+    ui->wykres_kontroler->addGraph();
+    ui->wykres_kontroler->addGraph();
+    ui->wykres_kontroler->addGraph();
+    ui->wykres_kontroler->graph(0)->setPen(QPen(Qt::blue));
+    ui->wykres_kontroler->graph(1)->setPen(QPen(Qt::green));
+    ui->wykres_kontroler->graph(2)->setPen(QPen(Qt::red));
+    ui->wykres_kontroler->graph(3)->setPen(QPen(Qt::yellow));
+
+    ui->wykres_kontroler->xAxis->setLabel("Czas");
+    ui->wykres_kontroler->xAxis->setRange(0,100);
+
+    ui->wykres_kontroler->yAxis->setLabel("Wartosc");
+    ui->wykres_kontroler->yAxis->setRange(-1,uklad.get_max());
 
 
 }
@@ -61,7 +76,8 @@ void Symulator::nextStep()
 
     ui->wykres->graph(0)->addData(krok, obecnaWartosc);
     ui->wykres->graph(1)->addData(krok, uklad.get_wartoscZadana());
-    ui->wykres->graph(2)->addData(krok, abs(uklad.get_wartoscZadana()-obecnaWartosc));
+    ui->wykres->graph(2)->addData(krok, uklad.get_wartoscZadana()-obecnaWartosc);
+    ui->wykres->yAxis->setRange(uklad.get_max()*0.5*-1,uklad.get_max()*1.2);
     if (krok>100)
         ui->wykres->xAxis->setRange(krok-100,krok+100);
     ui->wykres->replot();
@@ -127,13 +143,16 @@ void Symulator::on_button_reset_clicked()
     uklad.reset();
     krok = 0;
 
+    A.push_back(ui->spinbox_A->value());
+    B.push_back(ui->spinbox_B->value());
+
     uklad.setARX(A,B,ui->spinbox_k->value());
     uklad.setPID(ui->spinbox_P->value(),ui->spinbox_I->value(),ui->spinbox_D->value(),ui->spinbox_minimum->value(),ui->spinbox_maksimum->value());
     uklad.setWartosc(WartoscZadana,ui->spinbox_maksimumY->value(),ui->spinbox_okres->value());
-    ui->wykres->removeGraph(0);
-    ui->wykres->removeGraph(1);
-    ui->wykres->removeGraph(2);
 
+    ui->wykres->graph(0)->data()->clear();
+    ui->wykres->graph(1)->data()->clear();
+    ui->wykres->graph(2)->data()->clear();
 
     ui->wykres->xAxis->setLabel("Czas");
     ui->wykres->xAxis->setRange(0,100);
