@@ -130,7 +130,17 @@ void Symulator::on_button_reset_clicked()
     uklad.setARX(A,B,ui->spinbox_k->value());
     uklad.setPID(ui->spinbox_P->value(),ui->spinbox_I->value(),ui->spinbox_D->value(),ui->spinbox_minimum->value(),ui->spinbox_maksimum->value());
     uklad.setWartosc(WartoscZadana,ui->spinbox_maksimumY->value(),ui->spinbox_okres->value());
+    ui->wykres->removeGraph(0);
+    ui->wykres->removeGraph(1);
+    ui->wykres->removeGraph(2);
 
+
+    ui->wykres->xAxis->setLabel("Czas");
+    ui->wykres->xAxis->setRange(0,100);
+
+    ui->wykres->yAxis->setLabel("Wartosc");
+    ui->wykres->yAxis->setRange(0,uklad.get_max());
+    ui->wykres->replot();
 }
 
 
