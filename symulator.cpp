@@ -22,12 +22,16 @@ Symulator::Symulator(QWidget *parent)
     ui->button_reset->setEnabled(false);
     ui->spinbox_interval->setValue(timer->interval());
 
+    ui->wykres->legend->setVisible(true);
     ui->wykres->addGraph();
     ui->wykres->addGraph();
     ui->wykres->addGraph();
     ui->wykres->graph(0)->setPen(QPen(Qt::blue));
+    ui->wykres->graph(0)->setName("Wyjście układu");
     ui->wykres->graph(1)->setPen(QPen(Qt::green));
+    ui->wykres->graph(1)->setName("Wartość zadana");
     ui->wykres->graph(2)->setPen(QPen(Qt::red));
+    ui->wykres->graph(2)->setName("Uchyb");
 
     ui->wykres->xAxis->setLabel("Czas");
     ui->wykres->xAxis->setRange(0,100);
@@ -35,14 +39,19 @@ Symulator::Symulator(QWidget *parent)
     ui->wykres->yAxis->setLabel("Wartosc");
     ui->wykres->yAxis->setRange(uklad.get_max()*0.5*-1,uklad.get_max());
 
+    ui->wykres_kontroler->legend->setVisible(true);
     ui->wykres_kontroler->addGraph();
     ui->wykres_kontroler->addGraph();
     ui->wykres_kontroler->addGraph();
     ui->wykres_kontroler->addGraph();
     ui->wykres_kontroler->graph(0)->setPen(QPen(Qt::blue));
+    ui->wykres_kontroler->graph(0)->setName("Wyjście kontrolera");
     ui->wykres_kontroler->graph(1)->setPen(QPen(Qt::green));
+    ui->wykres_kontroler->graph(1)->setName("Część Proporcjonalna");
     ui->wykres_kontroler->graph(2)->setPen(QPen(Qt::red));
+    ui->wykres_kontroler->graph(2)->setName("Część Całkująca");
     ui->wykres_kontroler->graph(3)->setPen(QPen(Qt::yellow));
+    ui->wykres_kontroler->graph(3)->setName("Część Różniczkująca");
 
     ui->wykres_kontroler->xAxis->setLabel("Czas");
     ui->wykres_kontroler->xAxis->setRange(0,100);
@@ -81,11 +90,21 @@ void Symulator::nextStep()
     if (krok>100)
         ui->wykres->xAxis->setRange(krok-100,krok+100);
     ui->wykres->replot();
+
+    ui->wykres_kontroler->graph(0)->addData(krok, uklad.getWyjscie());
+    ui->wykres_kontroler->graph(1)->addData(krok, uklad.getBlad());
+    ui->wykres_kontroler->graph(2)->addData(krok, uklad.getCalka());
+    ui->wykres_kontroler->graph(3)->addData(krok, uklad.getPochodna());
+
+
+    ui->wykres_kontroler->yAxis->setRange(uklad.get_max()*0.5*-1,uklad.get_max()*1.2);
+    if (krok>100)
+        ui->wykres_kontroler->xAxis->setRange(krok-100,krok+100);
+    ui->wykres_kontroler->replot();
 }
 
 void Symulator::on_spinbox_A_valueChanged(double value)
 {
-    //A.clear();
     A.push_back(value);
     //uklad.setA(A);
 }
@@ -93,7 +112,6 @@ void Symulator::on_spinbox_A_valueChanged(double value)
 
 void Symulator::on_spinbox_B_valueChanged(double value)
 {
-   // B.clear();
     B.push_back(value);
     //uklad.setB(B);
 }
@@ -160,6 +178,18 @@ void Symulator::on_button_reset_clicked()
     ui->wykres->yAxis->setLabel("Wartosc");
     ui->wykres->yAxis->setRange(0,uklad.get_max());
     ui->wykres->replot();
+
+    ui->wykres_kontroler->graph(0)->data()->clear();
+    ui->wykres_kontroler->graph(1)->data()->clear();
+    ui->wykres_kontroler->graph(2)->data()->clear();
+    ui->wykres_kontroler->graph(3)->data()->clear();
+
+    ui->wykres_kontroler->xAxis->setLabel("Czas");
+    ui->wykres_kontroler->xAxis->setRange(0,100);
+
+    ui->wykres_kontroler->yAxis->setLabel("Wartosc");
+    ui->wykres_kontroler->yAxis->setRange(0,uklad.get_max());
+    ui->wykres_kontroler->replot();
 }
 
 
@@ -197,5 +227,11 @@ void Symulator::on_spinbox_interval_valueChanged(double arg1)
 void Symulator::on_spinbox_maksimumY_valueChanged(double arg1)
 {
         ui->wykres->yAxis->setRange(0,arg1+0.2*arg1);
+}
+
+
+void Symulator::on_checkBox_stateChanged(int arg1)
+{
+    uklad.setFiltr(arg1);
 }
 
