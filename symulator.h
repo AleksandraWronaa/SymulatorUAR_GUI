@@ -4,7 +4,6 @@
 #include <QMainWindow>
 #include <QTimer>
 #include "klasy.h"
-#include "qcustomplot.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -26,9 +25,9 @@ private slots:
 
     void nextStep();
 
-    void on_spinbox_A_valueChanged(double value);
+    //void on_spinbox_A_valueChanged(double value);
 
-    void on_spinbox_B_valueChanged(double value);
+    //void on_spinbox_B_valueChanged(double value);
 
     void on_list_WartoscZadana_currentRowChanged(int currentRow);
 
@@ -44,10 +43,13 @@ private slots:
 
     void on_spinbox_interval_valueChanged(double arg1);
 
-
     void on_spinbox_maksimumY_valueChanged(double arg1);
 
     void on_checkBox_stateChanged(int arg1);
+
+    void on_lineEdit_A_editingFinished(); // Obsługa dla współczynników A
+
+    void on_lineEdit_B_editingFinished(); // Obsługa dla współczynników B
 
 private:
     Ui::Symulator *ui;
