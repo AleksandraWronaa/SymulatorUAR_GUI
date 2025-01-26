@@ -183,15 +183,15 @@ void Symulator::on_button_wczytaj_clicked()
     ui->spinbox_P->setValue(uklad.get_kp());
     ui->spinbox_I->setValue(uklad.get_ki());
     ui->spinbox_D->setValue(uklad.get_kd());
-    //ui->lineEdit_A->setValue(uklad.get_lastA());
-    //ui->lineEdit_B->setValue(uklad.get_lastB());
+
+    ui->lineEdit_A->setText(QString::number(uklad.get_lastA()));
+    ui->lineEdit_B->setText(QString::number(uklad.get_lastB()));
+
     ui->spinbox_minimum->setValue(uklad.get_dolnyLimit());
     ui->spinbox_maksimum->setValue(uklad.get_gornyLimit());
     ui->spinbox_maksimumY->setValue(uklad.get_max());
     ui->spinbox_okres->setValue(uklad.get_okres());
     ui->list_WartoscZadana->setCurrentRow(uklad.get_rodzajLiczba());
-
-
 }
 
 
