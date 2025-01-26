@@ -16,33 +16,41 @@ private:
     std::deque<double> u_hist;
     std::deque<double> y_hist;
     std::default_random_engine generator;
-    std::normal_distribution<double> dystrybucja;
-
-    double validateSigma(double szum) {
-        return (szum > 0.0) ? szum : 0.01;
-    }
+    std::unique_ptr<std::normal_distribution<double>> dystrybucja;
+    double sigma;
 
 public:
-    ARXModel(const std::vector<double>& a, const std::vector<double>& b, double szum = 0.01)
-        : A(a), B(b), dystrybucja(0.0, validateSigma(szum)) {
+    ARXModel(const std::vector<double>& a, const std::vector<double>& b, double szum = 0.0)
+        : A(a), B(b), sigma(szum) {
+        if (sigma > 0.0) {
+            dystrybucja = std::make_unique<std::normal_distribution<double>>(0.0, sigma);
+        } else {
+            dystrybucja = nullptr;
+        }
         size_t maxSize = std::max(A.size(), B.size());
         u_hist = std::deque<double>(maxSize, 0.0);
         y_hist = std::deque<double>(maxSize, 0.0);
     }
 
     ARXModel()
-        : dystrybucja(0.0, 0.01) {
+        : sigma(0.0) {
         A = std::vector<double>({ 0.0 });
         B = std::vector<double>({ 0.0 });
+        dystrybucja = nullptr;
         size_t maxSize = std::max(A.size(), B.size());
         u_hist = std::deque<double>(maxSize, 0.0);
         y_hist = std::deque<double>(maxSize, 0.0);
     }
 
-    void setModel(const std::vector<double>& a, const std::vector<double>& b, double szum = 0.01) {
+    void setModel(const std::vector<double>& a, const std::vector<double>& b, double szum = 0.0) {
         A = a;
         B = b;
-        dystrybucja = std::normal_distribution<double>(0.0, validateSigma(szum));
+        sigma = szum;
+        if (sigma > 0.0) {
+            dystrybucja = std::make_unique<std::normal_distribution<double>>(0.0, sigma);
+        } else {
+            dystrybucja = nullptr;
+        }
         size_t maxSize = std::max(A.size(), B.size());
         u_hist = std::deque<double>(maxSize, 0.0);
         y_hist = std::deque<double>(maxSize, 0.0);
@@ -63,7 +71,12 @@ public:
     double krok(double input) {
         u_hist.pop_front();
         u_hist.push_back(input);
-        double szum = dystrybucja(generator);
+
+        double szum = 0.0;
+        if (dystrybucja) {
+            szum = (*dystrybucja)(generator);
+        }
+
         double y_k = 0.0;
 
         for (size_t i = 0; i < A.size(); i++) {
@@ -88,7 +101,7 @@ public:
         for (const auto& a : A) ofs << a << "\n";
         ofs << B.size() << "\n";
         for (const auto& b : B) ofs << b << "\n";
-        ofs << dystrybucja.mean() << "\n" << dystrybucja.stddev() << "\n";
+        ofs << 0.0 << "\n" << sigma << "\n";
     }
 
     void wczytajText(const std::string& nazwaPliku) {
@@ -115,7 +128,12 @@ public:
 
         double mean, stddev;
         ifs >> mean >> stddev;
-        dystrybucja = std::normal_distribution<double>(mean, validateSigma(stddev));
+        sigma = stddev;
+        if (sigma > 0.0) {
+            dystrybucja = std::make_unique<std::normal_distribution<double>>(mean, sigma);
+        } else {
+            dystrybucja = nullptr;
+        }
     }
 
     void reset() {
