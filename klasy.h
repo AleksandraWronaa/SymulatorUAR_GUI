@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <fstream>
 #include <cmath>
+#include <sstream>
 
 class ARXModel {
 private:
@@ -16,17 +17,21 @@ private:
     std::deque<double> y_hist;
     std::default_random_engine generator;
     std::normal_distribution<double> dystrybucja;
+
+    double validateSigma(double szum) {
+        return (szum > 0.0) ? szum : 0.01;
+    }
+
 public:
     ARXModel(const std::vector<double>& a, const std::vector<double>& b, double szum = 0.01)
-        : A(a), B(b), dystrybucja(0.0, szum)
-    {
+        : A(a), B(b), dystrybucja(0.0, validateSigma(szum)) {
         size_t maxSize = std::max(A.size(), B.size());
         u_hist = std::deque<double>(maxSize, 0.0);
         y_hist = std::deque<double>(maxSize, 0.0);
     }
+
     ARXModel()
-        : dystrybucja(0.0, 0.01)
-    {
+        : dystrybucja(0.0, 0.01) {
         A = std::vector<double>({ 0.0 });
         B = std::vector<double>({ 0.0 });
         size_t maxSize = std::max(A.size(), B.size());
@@ -34,28 +39,41 @@ public:
         y_hist = std::deque<double>(maxSize, 0.0);
     }
 
-    double get_lastA() const{return A.back();}
-    double get_lastB() const{return B.back();}
-
-    void setModel(const std::vector<double>& a, const std::vector<double>& b, double szum = 0.01)
-    {
+    void setModel(const std::vector<double>& a, const std::vector<double>& b, double szum = 0.01) {
         A = a;
         B = b;
-        dystrybucja = std::normal_distribution<double>(0.0, szum);
+        dystrybucja = std::normal_distribution<double>(0.0, validateSigma(szum));
+        size_t maxSize = std::max(A.size(), B.size());
+        u_hist = std::deque<double>(maxSize, 0.0);
+        y_hist = std::deque<double>(maxSize, 0.0);
     }
 
+    void updateCoefficients(const std::vector<double>& newA, const std::vector<double>& newB) {
+        A = newA;
+        B = newB;
+        size_t maxSize = std::max(A.size(), B.size());
+        u_hist = std::deque<double>(maxSize, 0.0);
+        y_hist = std::deque<double>(maxSize, 0.0);
+    }
+
+    double get_lastA() const { return A.empty() ? 0.0 : A.back(); }
+
+    double get_lastB() const { return B.empty() ? 0.0 : B.back(); }
 
     double krok(double input) {
         u_hist.pop_front();
         u_hist.push_back(input);
         double szum = dystrybucja(generator);
         double y_k = 0.0;
+
         for (size_t i = 0; i < A.size(); i++) {
             y_k -= A[i] * y_hist[y_hist.size() - 1 - i];
         }
+
         for (size_t i = 0; i < B.size(); i++) {
             y_k += B[i] * u_hist[u_hist.size() - 1 - i];
         }
+
         y_k += szum;
         y_hist.pop_front();
         y_hist.push_back(y_k);
@@ -65,6 +83,7 @@ public:
     void zapiszText(const std::string& nazwaPliku) {
         std::ofstream ofs(nazwaPliku);
         if (!ofs) return;
+
         ofs << A.size() << "\n";
         for (const auto& a : A) ofs << a << "\n";
         ofs << B.size() << "\n";
@@ -75,38 +94,36 @@ public:
     void wczytajText(const std::string& nazwaPliku) {
         std::ifstream ifs(nazwaPliku);
         if (!ifs) return;
+
         size_t rozmiarA, rozmiarB;
-        ifs >> rozmiarA;
         double wartA, wartB;
+        ifs >> rozmiarA;
         A.clear();
         A.reserve(rozmiarA);
-        for (size_t i = 0; i < rozmiarA; ++i)
-        {
+        for (size_t i = 0; i < rozmiarA; ++i) {
             ifs >> wartA;
             A.push_back(wartA);
         }
+
         ifs >> rozmiarB;
         B.clear();
         B.reserve(rozmiarB);
-        for (size_t i = 0; i < rozmiarB; ++i)
-        {
+        for (size_t i = 0; i < rozmiarB; ++i) {
             ifs >> wartB;
             B.push_back(wartB);
         }
+
         double mean, stddev;
         ifs >> mean >> stddev;
-        dystrybucja = std::normal_distribution<double>(mean, stddev);
-    }
-    void reset()
-    {
-         A.clear();
-         B.clear();
-         u_hist.clear();
-         y_hist.clear();
-        //ARXModel({0.0},{0.0},0.0);
+        dystrybucja = std::normal_distribution<double>(mean, validateSigma(stddev));
     }
 
-
+    void reset() {
+        A.clear();
+        B.clear();
+        u_hist.clear();
+        y_hist.clear();
+    }
 };
 
 template <typename T>
@@ -215,13 +232,13 @@ private:
 
 public:
     PIDController(double kp, double ki, double kd, double dolnyLimit = -1.0, double gornyLimit = 1.0)
-        : kp(kp), ki(ki), kd(kd), dolnyLimit(dolnyLimit), gornyLimit(gornyLimit),
-        calka(0.0), bladPoprzedzajacy(0.0), flagaPrzeciwNasyceniowa(false)
+        : kp(kp), ki(ki), kd(kd), calka(0.0), bladPoprzedzajacy(0.0),
+        dolnyLimit(dolnyLimit), gornyLimit(gornyLimit), flagaPrzeciwNasyceniowa(false)
     {
     }
     PIDController()
-        : kp(0.0), ki(0.0), kd(0.0), dolnyLimit(-1.0), gornyLimit(1.0),
-        calka(0.0), bladPoprzedzajacy(0.0), flagaPrzeciwNasyceniowa(false)
+        : kp(0.0), ki(0.0), kd(0.0), calka(0.0), bladPoprzedzajacy(0.0),
+        dolnyLimit(-1.0), gornyLimit(1.0), flagaPrzeciwNasyceniowa(false)
     {
     }
 

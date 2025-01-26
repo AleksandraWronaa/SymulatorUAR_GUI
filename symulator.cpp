@@ -3,7 +3,24 @@
 #include <QVBoxLayout>
 #include <QPixmap>
 #include <QPainter>
+#include <sstream>
+#include <vector>
+#include <QDebug>
+#include <QVector>
 
+std::vector<double> parseValues(const std::string& input) {
+    std::vector<double> values;
+    std::istringstream iss(input);
+    std::string token;
+    while (std::getline(iss, token, ',')) {
+        try {
+            values.push_back(std::stod(token));
+        } catch (...) {
+            std::cerr << "Nieprawidłowa wartość: " << token << std::endl;
+        }
+    }
+    return values;
+}
 
 Symulator::Symulator(QWidget *parent)
     : QMainWindow(parent)
@@ -103,7 +120,7 @@ void Symulator::nextStep()
     ui->wykres_kontroler->replot();
 }
 
-void Symulator::on_spinbox_A_valueChanged(double value)
+/*void Symulator::on_spinbox_A_valueChanged(double value)
 {
     A.push_back(value);
     //uklad.setA(A);
@@ -114,7 +131,7 @@ void Symulator::on_spinbox_B_valueChanged(double value)
 {
     B.push_back(value);
     //uklad.setB(B);
-}
+}*/
 
 void Symulator::on_list_WartoscZadana_currentRowChanged(int currentRow)
 {
@@ -139,8 +156,8 @@ void Symulator::on_button_wczytaj_clicked()
     ui->spinbox_P->setValue(uklad.get_kp());
     ui->spinbox_I->setValue(uklad.get_ki());
     ui->spinbox_D->setValue(uklad.get_kd());
-    ui->spinbox_A->setValue(uklad.get_lastA());
-    ui->spinbox_B->setValue(uklad.get_lastB());
+    //ui->lineEdit_A->setValue(uklad.get_lastA());
+    //ui->lineEdit_B->setValue(uklad.get_lastB());
     ui->spinbox_minimum->setValue(uklad.get_dolnyLimit());
     ui->spinbox_maksimum->setValue(uklad.get_gornyLimit());
     ui->spinbox_maksimumY->setValue(uklad.get_max());
@@ -161,9 +178,13 @@ void Symulator::on_button_reset_clicked()
     uklad.reset();
     krok = 0;
 
-    A.push_back(ui->spinbox_A->value());
-    B.push_back(ui->spinbox_B->value());
+    //A.push_back(ui->spinbox_A->value());
+    //B.push_back(ui->spinbox_B->value());
+    // Reset współczynników A i B
+    A = parseValues(ui->lineEdit_A->text().toStdString());
+    B = parseValues(ui->lineEdit_B->text().toStdString());
 
+    uklad.setARX(A, B, ui->spinbox_k->value());
     uklad.setARX(A,B,ui->spinbox_k->value());
     uklad.setPID(ui->spinbox_P->value(),ui->spinbox_I->value(),ui->spinbox_D->value(),ui->spinbox_minimum->value(),ui->spinbox_maksimum->value());
     uklad.setWartosc(WartoscZadana,ui->spinbox_maksimumY->value(),ui->spinbox_okres->value());
@@ -235,3 +256,16 @@ void Symulator::on_checkBox_stateChanged(int arg1)
     uklad.setFiltr(arg1);
 }
 
+void Symulator::on_lineEdit_A_editingFinished() {
+    std::string inputA = ui->lineEdit_A->text().toStdString();
+    std::vector<double> newA = parseValues(inputA);
+    A = newA;
+    uklad.setARX(A, B, ui->spinbox_k->value());
+}
+
+void Symulator::on_lineEdit_B_editingFinished() {
+    std::string inputB = ui->lineEdit_B->text().toStdString();
+    std::vector<double> newB = parseValues(inputB);
+    B = newB;
+    uklad.setARX(A, B, ui->spinbox_k->value());
+}
