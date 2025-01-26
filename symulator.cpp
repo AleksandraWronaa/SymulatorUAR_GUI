@@ -126,7 +126,7 @@ void Symulator::nextStep()
     ui->wykres_kontroler->graph(2)->addData(krok, uklad.getPochodna());
 
 
-    ui->wykres_kontroler->yAxis->setRange(uklad.get_max()*0.5*-1,std::max(std::max(uklad.getBlad(), uklad.getCalka()), uklad.getPochodna())*1.2);
+    ui->wykres_kontroler->yAxis->setRange(std::min(-1.0,abs(std::min(std::min(uklad.getBlad(), uklad.getCalka()), uklad.getPochodna()))*-1.2)  ,std::max(std::max(uklad.getBlad(), uklad.getCalka()), uklad.getPochodna())*1.2);
     if (krok>100)
         ui->wykres_kontroler->xAxis->setRange(krok-100,krok+100);
     ui->wykres_kontroler->replot();
@@ -134,14 +134,14 @@ void Symulator::nextStep()
 
 
     ui->wykres_uchyb->graph(0)->addData(krok, uklad.get_wartoscZadana()-obecnaWartosc);
-    ui->wykres_uchyb->yAxis->setRange(std::min(-1.0,((uklad.get_wartoscZadana()-obecnaWartosc)*-1.2)),std::max(1.0,((uklad.get_wartoscZadana()-obecnaWartosc)*1.2)));
+    ui->wykres_uchyb->yAxis->setRange(std::min(-1.0,((uklad.get_wartoscZadana()-obecnaWartosc)*1.2)),std::max(1.0,((uklad.get_wartoscZadana()-obecnaWartosc)*1.2)));
     if (krok>100)
         ui->wykres_uchyb->xAxis->setRange(krok-100,krok+100);
     ui->wykres_uchyb->replot();
 
 
     ui->wykres_kontroler_suma->graph(0)->addData(krok, uklad.getWyjscie());
-    ui->wykres_kontroler_suma->yAxis->setRange(std::min(-1.0,((uklad.getWyjscie())*-1.2)),std::max(1.0,((uklad.getWyjscie())*1.2)));
+    ui->wykres_kontroler_suma->yAxis->setRange(std::min(-1.0,((uklad.getWyjscie())*1.2)),std::max(1.0,((uklad.getWyjscie())*1.2)));
     if (krok>100)
         ui->wykres_kontroler_suma->xAxis->setRange(krok-100,krok+100);
     ui->wykres_kontroler_suma->replot();
