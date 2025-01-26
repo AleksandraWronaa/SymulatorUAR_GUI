@@ -13,14 +13,18 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QCheckBox>
 #include <QtWidgets/QDoubleSpinBox>
+#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QGroupBox>
+#include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
 #include <QtWidgets/QListWidget>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
+#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 #include "qcustomplot.h"
 
@@ -30,42 +34,73 @@ class Ui_Symulator
 {
 public:
     QWidget *centralwidget;
-    QPushButton *button_zapisz;
-    QPushButton *button_wczytaj;
+    QGridLayout *gridLayout;
+    QHBoxLayout *horizontalLayout_17;
+    QVBoxLayout *verticalLayout_9;
+    QCustomPlot *wykres;
+    QCustomPlot *wykres_uchyb;
+    QVBoxLayout *verticalLayout_10;
+    QCustomPlot *wykres_kontroler;
+    QCustomPlot *wykres_kontroler_suma;
+    QHBoxLayout *horizontalLayout_16;
+    QHBoxLayout *horizontalLayout_4;
+    QPushButton *button_start;
+    QPushButton *button_stop;
+    QPushButton *button_reset;
+    QHBoxLayout *horizontalLayout_5;
+    QVBoxLayout *verticalLayout_3;
+    QLabel *label_interval;
+    QLabel *label_ms;
+    QDoubleSpinBox *spinbox_interval;
+    QHBoxLayout *horizontalLayout_15;
+    QHBoxLayout *horizontalLayout_3;
     QGroupBox *groupBox_PID;
-    QDoubleSpinBox *spinbox_D;
-    QDoubleSpinBox *spinbox_I;
-    QLabel *label_D;
+    QHBoxLayout *horizontalLayout_6;
+    QVBoxLayout *verticalLayout_4;
     QLabel *label_P;
     QLabel *label_I;
+    QLabel *label_D;
+    QVBoxLayout *verticalLayout_5;
     QDoubleSpinBox *spinbox_P;
+    QDoubleSpinBox *spinbox_I;
+    QDoubleSpinBox *spinbox_D;
     QGroupBox *groupBox_ARX;
-    QDoubleSpinBox *spinbox_B;
-    QLabel *label_A;
+    QHBoxLayout *horizontalLayout_10;
+    QVBoxLayout *verticalLayout_6;
+    QLabel *label;
+    QHBoxLayout *horizontalLayout_7;
     QLabel *label_k;
-    QDoubleSpinBox *spinbox_A;
-    QLabel *label_B;
     QDoubleSpinBox *spinbox_k;
+    QHBoxLayout *horizontalLayout_8;
+    QLabel *label_A;
+    QLineEdit *lineEdit_A;
+    QHBoxLayout *horizontalLayout_9;
+    QLabel *label_B;
+    QLineEdit *lineEdit_B;
     QGroupBox *groupBox_WartoscZadana;
+    QHBoxLayout *horizontalLayout_14;
+    QHBoxLayout *horizontalLayout_13;
     QListWidget *list_WartoscZadana;
+    QHBoxLayout *horizontalLayout_12;
+    QVBoxLayout *verticalLayout_8;
     QLabel *label_maksimumY;
-    QDoubleSpinBox *spinbox_maksimumY;
     QLabel *label_okres;
+    QVBoxLayout *verticalLayout_7;
+    QDoubleSpinBox *spinbox_maksimumY;
     QSpinBox *spinbox_okres;
     QGroupBox *groupBox_UstawieniaFiltra;
-    QDoubleSpinBox *spinbox_maksimum;
+    QHBoxLayout *horizontalLayout_11;
+    QVBoxLayout *verticalLayout;
+    QHBoxLayout *horizontalLayout;
     QLabel *label_minimum;
     QDoubleSpinBox *spinbox_minimum;
+    QHBoxLayout *horizontalLayout_2;
     QLabel *label_maksimum;
+    QDoubleSpinBox *spinbox_maksimum;
     QCheckBox *checkBox;
-    QPushButton *button_start;
-    QPushButton *button_reset;
-    QPushButton *button_stop;
-    QLabel *label_interval;
-    QDoubleSpinBox *spinbox_interval;
-    QLabel *label_ms;
-    QCustomPlot *wykres;
-    QCustomPlot *wykres_kontroler;
+    QVBoxLayout *verticalLayout_2;
+    QPushButton *button_zapisz;
+    QPushButton *button_wczytaj;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -73,167 +108,104 @@ public:
     {
         if (Symulator->objectName().isEmpty())
             Symulator->setObjectName("Symulator");
-        Symulator->resize(1340, 801);
+        Symulator->resize(1203, 804);
         centralwidget = new QWidget(Symulator);
         centralwidget->setObjectName("centralwidget");
-        button_zapisz = new QPushButton(centralwidget);
-        button_zapisz->setObjectName("button_zapisz");
-        button_zapisz->setGeometry(QRect(1180, 560, 121, 41));
+        gridLayout = new QGridLayout(centralwidget);
+        gridLayout->setObjectName("gridLayout");
+        horizontalLayout_17 = new QHBoxLayout();
+        horizontalLayout_17->setObjectName("horizontalLayout_17");
+        verticalLayout_9 = new QVBoxLayout();
+        verticalLayout_9->setObjectName("verticalLayout_9");
+        wykres = new QCustomPlot(centralwidget);
+        wykres->setObjectName("wykres");
+        wykres->setMinimumSize(QSize(0, 256));
+
+        verticalLayout_9->addWidget(wykres);
+
+        wykres_uchyb = new QCustomPlot(centralwidget);
+        wykres_uchyb->setObjectName("wykres_uchyb");
+        wykres_uchyb->setMinimumSize(QSize(0, 256));
+
+        verticalLayout_9->addWidget(wykres_uchyb);
+
+
+        horizontalLayout_17->addLayout(verticalLayout_9);
+
+        verticalLayout_10 = new QVBoxLayout();
+        verticalLayout_10->setObjectName("verticalLayout_10");
+        wykres_kontroler = new QCustomPlot(centralwidget);
+        wykres_kontroler->setObjectName("wykres_kontroler");
+        wykres_kontroler->setMinimumSize(QSize(0, 256));
+
+        verticalLayout_10->addWidget(wykres_kontroler);
+
+        wykres_kontroler_suma = new QCustomPlot(centralwidget);
+        wykres_kontroler_suma->setObjectName("wykres_kontroler_suma");
+        wykres_kontroler_suma->setMinimumSize(QSize(0, 256));
+
+        verticalLayout_10->addWidget(wykres_kontroler_suma);
+
+
+        horizontalLayout_17->addLayout(verticalLayout_10);
+
+
+        gridLayout->addLayout(horizontalLayout_17, 0, 0, 1, 1);
+
+        horizontalLayout_16 = new QHBoxLayout();
+        horizontalLayout_16->setObjectName("horizontalLayout_16");
+        horizontalLayout_16->setSizeConstraint(QLayout::SetFixedSize);
+        horizontalLayout_4 = new QHBoxLayout();
+        horizontalLayout_4->setObjectName("horizontalLayout_4");
+        button_start = new QPushButton(centralwidget);
+        button_start->setObjectName("button_start");
         QFont font;
         font.setBold(true);
-        button_zapisz->setFont(font);
-        button_wczytaj = new QPushButton(centralwidget);
-        button_wczytaj->setObjectName("button_wczytaj");
-        button_wczytaj->setGeometry(QRect(1178, 620, 121, 41));
-        button_wczytaj->setFont(font);
-        groupBox_PID = new QGroupBox(centralwidget);
-        groupBox_PID->setObjectName("groupBox_PID");
-        groupBox_PID->setGeometry(QRect(30, 560, 201, 171));
+        button_start->setFont(font);
+
+        horizontalLayout_4->addWidget(button_start);
+
+        button_stop = new QPushButton(centralwidget);
+        button_stop->setObjectName("button_stop");
+        button_stop->setFont(font);
+
+        horizontalLayout_4->addWidget(button_stop);
+
+        button_reset = new QPushButton(centralwidget);
+        button_reset->setObjectName("button_reset");
+        button_reset->setFont(font);
+
+        horizontalLayout_4->addWidget(button_reset);
+
+
+        horizontalLayout_16->addLayout(horizontalLayout_4);
+
+        horizontalLayout_5 = new QHBoxLayout();
+        horizontalLayout_5->setObjectName("horizontalLayout_5");
+        verticalLayout_3 = new QVBoxLayout();
+        verticalLayout_3->setObjectName("verticalLayout_3");
+        label_interval = new QLabel(centralwidget);
+        label_interval->setObjectName("label_interval");
         QFont font1;
         font1.setPointSize(12);
         font1.setBold(true);
-        groupBox_PID->setFont(font1);
-        groupBox_PID->setAlignment(Qt::AlignCenter);
-        spinbox_D = new QDoubleSpinBox(groupBox_PID);
-        spinbox_D->setObjectName("spinbox_D");
-        spinbox_D->setGeometry(QRect(80, 130, 81, 29));
-        spinbox_D->setMinimum(-99.989999999999995);
-        spinbox_I = new QDoubleSpinBox(groupBox_PID);
-        spinbox_I->setObjectName("spinbox_I");
-        spinbox_I->setGeometry(QRect(80, 90, 81, 29));
-        spinbox_I->setMinimum(-99.989999999999995);
-        label_D = new QLabel(groupBox_PID);
-        label_D->setObjectName("label_D");
-        label_D->setGeometry(QRect(40, 130, 31, 20));
-        label_D->setFont(font1);
-        label_D->setTextFormat(Qt::AutoText);
-        label_D->setAlignment(Qt::AlignCenter);
-        label_P = new QLabel(groupBox_PID);
-        label_P->setObjectName("label_P");
-        label_P->setGeometry(QRect(40, 50, 31, 20));
-        label_P->setFont(font1);
-        label_P->setTextFormat(Qt::AutoText);
-        label_P->setAlignment(Qt::AlignCenter);
-        label_I = new QLabel(groupBox_PID);
-        label_I->setObjectName("label_I");
-        label_I->setGeometry(QRect(40, 90, 31, 20));
-        label_I->setFont(font1);
-        label_I->setTextFormat(Qt::AutoText);
-        label_I->setAlignment(Qt::AlignCenter);
-        spinbox_P = new QDoubleSpinBox(groupBox_PID);
-        spinbox_P->setObjectName("spinbox_P");
-        spinbox_P->setGeometry(QRect(80, 50, 81, 29));
-        spinbox_P->setMinimum(-99.989999999999995);
-        groupBox_ARX = new QGroupBox(centralwidget);
-        groupBox_ARX->setObjectName("groupBox_ARX");
-        groupBox_ARX->setGeometry(QRect(260, 560, 191, 171));
-        groupBox_ARX->setFont(font1);
-        groupBox_ARX->setAlignment(Qt::AlignCenter);
-        spinbox_B = new QDoubleSpinBox(groupBox_ARX);
-        spinbox_B->setObjectName("spinbox_B");
-        spinbox_B->setGeometry(QRect(80, 130, 81, 29));
-        spinbox_B->setMinimum(-99.989999999999995);
-        label_A = new QLabel(groupBox_ARX);
-        label_A->setObjectName("label_A");
-        label_A->setGeometry(QRect(40, 90, 31, 20));
-        label_A->setFont(font1);
-        label_A->setTextFormat(Qt::AutoText);
-        label_A->setAlignment(Qt::AlignCenter);
-        label_k = new QLabel(groupBox_ARX);
-        label_k->setObjectName("label_k");
-        label_k->setGeometry(QRect(20, 40, 51, 20));
-        label_k->setFont(font1);
-        label_k->setTextFormat(Qt::AutoText);
-        label_k->setAlignment(Qt::AlignCenter);
-        spinbox_A = new QDoubleSpinBox(groupBox_ARX);
-        spinbox_A->setObjectName("spinbox_A");
-        spinbox_A->setGeometry(QRect(80, 90, 81, 29));
-        spinbox_A->setMinimum(-99.989999999999995);
-        label_B = new QLabel(groupBox_ARX);
-        label_B->setObjectName("label_B");
-        label_B->setGeometry(QRect(40, 130, 31, 20));
-        label_B->setFont(font1);
-        label_B->setTextFormat(Qt::AutoText);
-        label_B->setAlignment(Qt::AlignCenter);
-        spinbox_k = new QDoubleSpinBox(groupBox_ARX);
-        spinbox_k->setObjectName("spinbox_k");
-        spinbox_k->setGeometry(QRect(80, 40, 81, 29));
-        groupBox_WartoscZadana = new QGroupBox(centralwidget);
-        groupBox_WartoscZadana->setObjectName("groupBox_WartoscZadana");
-        groupBox_WartoscZadana->setGeometry(QRect(490, 580, 381, 151));
-        groupBox_WartoscZadana->setFont(font1);
-        groupBox_WartoscZadana->setAlignment(Qt::AlignCenter);
-        list_WartoscZadana = new QListWidget(groupBox_WartoscZadana);
-        list_WartoscZadana->setObjectName("list_WartoscZadana");
-        list_WartoscZadana->setGeometry(QRect(20, 50, 171, 81));
-        list_WartoscZadana->setLayoutDirection(Qt::LeftToRight);
-        label_maksimumY = new QLabel(groupBox_WartoscZadana);
-        label_maksimumY->setObjectName("label_maksimumY");
-        label_maksimumY->setGeometry(QRect(210, 60, 71, 20));
-        label_maksimumY->setFont(font1);
-        label_maksimumY->setTextFormat(Qt::AutoText);
-        label_maksimumY->setAlignment(Qt::AlignCenter);
-        spinbox_maksimumY = new QDoubleSpinBox(groupBox_WartoscZadana);
-        spinbox_maksimumY->setObjectName("spinbox_maksimumY");
-        spinbox_maksimumY->setGeometry(QRect(290, 50, 81, 29));
-        label_okres = new QLabel(groupBox_WartoscZadana);
-        label_okres->setObjectName("label_okres");
-        label_okres->setGeometry(QRect(210, 100, 71, 20));
-        label_okres->setFont(font1);
-        label_okres->setTextFormat(Qt::AutoText);
-        label_okres->setAlignment(Qt::AlignCenter);
-        spinbox_okres = new QSpinBox(groupBox_WartoscZadana);
-        spinbox_okres->setObjectName("spinbox_okres");
-        spinbox_okres->setGeometry(QRect(290, 100, 81, 29));
-        groupBox_UstawieniaFiltra = new QGroupBox(centralwidget);
-        groupBox_UstawieniaFiltra->setObjectName("groupBox_UstawieniaFiltra");
-        groupBox_UstawieniaFiltra->setGeometry(QRect(890, 580, 221, 151));
-        groupBox_UstawieniaFiltra->setFont(font1);
-        groupBox_UstawieniaFiltra->setAlignment(Qt::AlignCenter);
-        spinbox_maksimum = new QDoubleSpinBox(groupBox_UstawieniaFiltra);
-        spinbox_maksimum->setObjectName("spinbox_maksimum");
-        spinbox_maksimum->setGeometry(QRect(130, 120, 81, 29));
-        spinbox_maksimum->setMinimum(-99.989999999999995);
-        label_minimum = new QLabel(groupBox_UstawieniaFiltra);
-        label_minimum->setObjectName("label_minimum");
-        label_minimum->setGeometry(QRect(10, 70, 101, 20));
-        label_minimum->setFont(font1);
-        label_minimum->setTextFormat(Qt::AutoText);
-        label_minimum->setAlignment(Qt::AlignCenter);
-        spinbox_minimum = new QDoubleSpinBox(groupBox_UstawieniaFiltra);
-        spinbox_minimum->setObjectName("spinbox_minimum");
-        spinbox_minimum->setGeometry(QRect(130, 70, 81, 29));
-        spinbox_minimum->setMinimum(-99.989999999999995);
-        label_maksimum = new QLabel(groupBox_UstawieniaFiltra);
-        label_maksimum->setObjectName("label_maksimum");
-        label_maksimum->setGeometry(QRect(10, 120, 111, 20));
-        label_maksimum->setFont(font1);
-        label_maksimum->setTextFormat(Qt::AutoText);
-        label_maksimum->setAlignment(Qt::AlignCenter);
-        checkBox = new QCheckBox(groupBox_UstawieniaFiltra);
-        checkBox->setObjectName("checkBox");
-        checkBox->setGeometry(QRect(50, 30, 121, 22));
-        button_start = new QPushButton(centralwidget);
-        button_start->setObjectName("button_start");
-        button_start->setGeometry(QRect(520, 490, 121, 41));
-        button_start->setFont(font);
-        button_reset = new QPushButton(centralwidget);
-        button_reset->setObjectName("button_reset");
-        button_reset->setGeometry(QRect(670, 490, 121, 41));
-        button_reset->setFont(font);
-        button_stop = new QPushButton(centralwidget);
-        button_stop->setObjectName("button_stop");
-        button_stop->setGeometry(QRect(370, 490, 121, 41));
-        button_stop->setFont(font);
-        label_interval = new QLabel(centralwidget);
-        label_interval->setObjectName("label_interval");
-        label_interval->setGeometry(QRect(860, 500, 101, 20));
         label_interval->setFont(font1);
         label_interval->setTextFormat(Qt::AutoText);
-        label_interval->setAlignment(Qt::AlignCenter);
+        label_interval->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        verticalLayout_3->addWidget(label_interval);
+
+        label_ms = new QLabel(centralwidget);
+        label_ms->setObjectName("label_ms");
+        label_ms->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        verticalLayout_3->addWidget(label_ms);
+
+
+        horizontalLayout_5->addLayout(verticalLayout_3);
+
         spinbox_interval = new QDoubleSpinBox(centralwidget);
         spinbox_interval->setObjectName("spinbox_interval");
-        spinbox_interval->setGeometry(QRect(960, 500, 81, 29));
         QFont font2;
         font2.setPointSize(11);
         font2.setBold(true);
@@ -241,23 +213,337 @@ public:
         spinbox_interval->setDecimals(0);
         spinbox_interval->setMinimum(10.000000000000000);
         spinbox_interval->setMaximum(10000.000000000000000);
-        label_ms = new QLabel(centralwidget);
-        label_ms->setObjectName("label_ms");
-        label_ms->setGeometry(QRect(880, 520, 49, 16));
-        wykres = new QCustomPlot(centralwidget);
-        wykres->setObjectName("wykres");
-        wykres->setGeometry(QRect(10, 10, 631, 471));
-        wykres_kontroler = new QCustomPlot(centralwidget);
-        wykres_kontroler->setObjectName("wykres_kontroler");
-        wykres_kontroler->setGeometry(QRect(670, 10, 661, 471));
+
+        horizontalLayout_5->addWidget(spinbox_interval);
+
+
+        horizontalLayout_16->addLayout(horizontalLayout_5);
+
+
+        gridLayout->addLayout(horizontalLayout_16, 1, 0, 1, 1);
+
+        horizontalLayout_15 = new QHBoxLayout();
+        horizontalLayout_15->setSpacing(4);
+        horizontalLayout_15->setObjectName("horizontalLayout_15");
+        horizontalLayout_15->setSizeConstraint(QLayout::SetFixedSize);
+        horizontalLayout_3 = new QHBoxLayout();
+        horizontalLayout_3->setObjectName("horizontalLayout_3");
+        horizontalLayout_3->setSizeConstraint(QLayout::SetFixedSize);
+        groupBox_PID = new QGroupBox(centralwidget);
+        groupBox_PID->setObjectName("groupBox_PID");
+        groupBox_PID->setFont(font1);
+        groupBox_PID->setAlignment(Qt::AlignCenter);
+        horizontalLayout_6 = new QHBoxLayout(groupBox_PID);
+        horizontalLayout_6->setObjectName("horizontalLayout_6");
+        verticalLayout_4 = new QVBoxLayout();
+        verticalLayout_4->setObjectName("verticalLayout_4");
+        verticalLayout_4->setSizeConstraint(QLayout::SetFixedSize);
+        label_P = new QLabel(groupBox_PID);
+        label_P->setObjectName("label_P");
+        label_P->setFont(font1);
+        label_P->setTextFormat(Qt::AutoText);
+        label_P->setAlignment(Qt::AlignCenter);
+
+        verticalLayout_4->addWidget(label_P);
+
+        label_I = new QLabel(groupBox_PID);
+        label_I->setObjectName("label_I");
+        label_I->setFont(font1);
+        label_I->setTextFormat(Qt::AutoText);
+        label_I->setAlignment(Qt::AlignCenter);
+
+        verticalLayout_4->addWidget(label_I);
+
+        label_D = new QLabel(groupBox_PID);
+        label_D->setObjectName("label_D");
+        label_D->setFont(font1);
+        label_D->setTextFormat(Qt::AutoText);
+        label_D->setAlignment(Qt::AlignCenter);
+
+        verticalLayout_4->addWidget(label_D);
+
+
+        horizontalLayout_6->addLayout(verticalLayout_4);
+
+        verticalLayout_5 = new QVBoxLayout();
+        verticalLayout_5->setObjectName("verticalLayout_5");
+        verticalLayout_5->setSizeConstraint(QLayout::SetFixedSize);
+        spinbox_P = new QDoubleSpinBox(groupBox_PID);
+        spinbox_P->setObjectName("spinbox_P");
+        spinbox_P->setMinimum(-99.989999999999995);
+
+        verticalLayout_5->addWidget(spinbox_P);
+
+        spinbox_I = new QDoubleSpinBox(groupBox_PID);
+        spinbox_I->setObjectName("spinbox_I");
+        spinbox_I->setMinimum(-99.989999999999995);
+
+        verticalLayout_5->addWidget(spinbox_I);
+
+        spinbox_D = new QDoubleSpinBox(groupBox_PID);
+        spinbox_D->setObjectName("spinbox_D");
+        spinbox_D->setMinimum(-99.989999999999995);
+
+        verticalLayout_5->addWidget(spinbox_D);
+
+
+        horizontalLayout_6->addLayout(verticalLayout_5);
+
+
+        horizontalLayout_3->addWidget(groupBox_PID);
+
+        groupBox_ARX = new QGroupBox(centralwidget);
+        groupBox_ARX->setObjectName("groupBox_ARX");
+        groupBox_ARX->setFont(font1);
+        groupBox_ARX->setAlignment(Qt::AlignCenter);
+        horizontalLayout_10 = new QHBoxLayout(groupBox_ARX);
+        horizontalLayout_10->setObjectName("horizontalLayout_10");
+        verticalLayout_6 = new QVBoxLayout();
+        verticalLayout_6->setObjectName("verticalLayout_6");
+        verticalLayout_6->setSizeConstraint(QLayout::SetFixedSize);
+        label = new QLabel(groupBox_ARX);
+        label->setObjectName("label");
+
+        verticalLayout_6->addWidget(label);
+
+        horizontalLayout_7 = new QHBoxLayout();
+        horizontalLayout_7->setObjectName("horizontalLayout_7");
+        horizontalLayout_7->setSizeConstraint(QLayout::SetFixedSize);
+        label_k = new QLabel(groupBox_ARX);
+        label_k->setObjectName("label_k");
+        label_k->setFont(font1);
+        label_k->setTextFormat(Qt::AutoText);
+        label_k->setAlignment(Qt::AlignCenter);
+
+        horizontalLayout_7->addWidget(label_k);
+
+        spinbox_k = new QDoubleSpinBox(groupBox_ARX);
+        spinbox_k->setObjectName("spinbox_k");
+
+        horizontalLayout_7->addWidget(spinbox_k);
+
+
+        verticalLayout_6->addLayout(horizontalLayout_7);
+
+        horizontalLayout_8 = new QHBoxLayout();
+        horizontalLayout_8->setObjectName("horizontalLayout_8");
+        horizontalLayout_8->setSizeConstraint(QLayout::SetFixedSize);
+        label_A = new QLabel(groupBox_ARX);
+        label_A->setObjectName("label_A");
+        label_A->setFont(font1);
+        label_A->setTextFormat(Qt::AutoText);
+        label_A->setAlignment(Qt::AlignCenter);
+
+        horizontalLayout_8->addWidget(label_A);
+
+        lineEdit_A = new QLineEdit(groupBox_ARX);
+        lineEdit_A->setObjectName("lineEdit_A");
+
+        horizontalLayout_8->addWidget(lineEdit_A);
+
+
+        verticalLayout_6->addLayout(horizontalLayout_8);
+
+        horizontalLayout_9 = new QHBoxLayout();
+        horizontalLayout_9->setObjectName("horizontalLayout_9");
+        horizontalLayout_9->setSizeConstraint(QLayout::SetFixedSize);
+        label_B = new QLabel(groupBox_ARX);
+        label_B->setObjectName("label_B");
+        label_B->setFont(font1);
+        label_B->setTextFormat(Qt::AutoText);
+        label_B->setAlignment(Qt::AlignCenter);
+
+        horizontalLayout_9->addWidget(label_B);
+
+        lineEdit_B = new QLineEdit(groupBox_ARX);
+        lineEdit_B->setObjectName("lineEdit_B");
+
+        horizontalLayout_9->addWidget(lineEdit_B);
+
+
+        verticalLayout_6->addLayout(horizontalLayout_9);
+
+
+        horizontalLayout_10->addLayout(verticalLayout_6);
+
+
+        horizontalLayout_3->addWidget(groupBox_ARX);
+
+        groupBox_WartoscZadana = new QGroupBox(centralwidget);
+        groupBox_WartoscZadana->setObjectName("groupBox_WartoscZadana");
+        groupBox_WartoscZadana->setFont(font1);
+        groupBox_WartoscZadana->setAlignment(Qt::AlignCenter);
+        horizontalLayout_14 = new QHBoxLayout(groupBox_WartoscZadana);
+        horizontalLayout_14->setObjectName("horizontalLayout_14");
+        horizontalLayout_13 = new QHBoxLayout();
+        horizontalLayout_13->setObjectName("horizontalLayout_13");
+        horizontalLayout_13->setSizeConstraint(QLayout::SetFixedSize);
+        list_WartoscZadana = new QListWidget(groupBox_WartoscZadana);
+        list_WartoscZadana->setObjectName("list_WartoscZadana");
+        list_WartoscZadana->setLayoutDirection(Qt::LeftToRight);
+
+        horizontalLayout_13->addWidget(list_WartoscZadana);
+
+        horizontalLayout_12 = new QHBoxLayout();
+        horizontalLayout_12->setObjectName("horizontalLayout_12");
+        horizontalLayout_12->setSizeConstraint(QLayout::SetFixedSize);
+        verticalLayout_8 = new QVBoxLayout();
+        verticalLayout_8->setObjectName("verticalLayout_8");
+        verticalLayout_8->setSizeConstraint(QLayout::SetFixedSize);
+        label_maksimumY = new QLabel(groupBox_WartoscZadana);
+        label_maksimumY->setObjectName("label_maksimumY");
+        label_maksimumY->setFont(font1);
+        label_maksimumY->setTextFormat(Qt::AutoText);
+        label_maksimumY->setAlignment(Qt::AlignCenter);
+
+        verticalLayout_8->addWidget(label_maksimumY);
+
+        label_okres = new QLabel(groupBox_WartoscZadana);
+        label_okres->setObjectName("label_okres");
+        label_okres->setFont(font1);
+        label_okres->setTextFormat(Qt::AutoText);
+        label_okres->setAlignment(Qt::AlignCenter);
+
+        verticalLayout_8->addWidget(label_okres);
+
+
+        horizontalLayout_12->addLayout(verticalLayout_8);
+
+        verticalLayout_7 = new QVBoxLayout();
+        verticalLayout_7->setObjectName("verticalLayout_7");
+        verticalLayout_7->setSizeConstraint(QLayout::SetFixedSize);
+        spinbox_maksimumY = new QDoubleSpinBox(groupBox_WartoscZadana);
+        spinbox_maksimumY->setObjectName("spinbox_maksimumY");
+
+        verticalLayout_7->addWidget(spinbox_maksimumY);
+
+        spinbox_okres = new QSpinBox(groupBox_WartoscZadana);
+        spinbox_okres->setObjectName("spinbox_okres");
+
+        verticalLayout_7->addWidget(spinbox_okres);
+
+
+        horizontalLayout_12->addLayout(verticalLayout_7);
+
+
+        horizontalLayout_13->addLayout(horizontalLayout_12);
+
+
+        horizontalLayout_14->addLayout(horizontalLayout_13);
+
+
+        horizontalLayout_3->addWidget(groupBox_WartoscZadana);
+
+        groupBox_UstawieniaFiltra = new QGroupBox(centralwidget);
+        groupBox_UstawieniaFiltra->setObjectName("groupBox_UstawieniaFiltra");
+        groupBox_UstawieniaFiltra->setFont(font1);
+        groupBox_UstawieniaFiltra->setAlignment(Qt::AlignCenter);
+        horizontalLayout_11 = new QHBoxLayout(groupBox_UstawieniaFiltra);
+        horizontalLayout_11->setObjectName("horizontalLayout_11");
+        verticalLayout = new QVBoxLayout();
+        verticalLayout->setObjectName("verticalLayout");
+        verticalLayout->setSizeConstraint(QLayout::SetFixedSize);
+        horizontalLayout = new QHBoxLayout();
+        horizontalLayout->setObjectName("horizontalLayout");
+        horizontalLayout->setSizeConstraint(QLayout::SetFixedSize);
+        label_minimum = new QLabel(groupBox_UstawieniaFiltra);
+        label_minimum->setObjectName("label_minimum");
+        label_minimum->setFont(font1);
+        label_minimum->setTextFormat(Qt::AutoText);
+        label_minimum->setAlignment(Qt::AlignCenter);
+
+        horizontalLayout->addWidget(label_minimum);
+
+        spinbox_minimum = new QDoubleSpinBox(groupBox_UstawieniaFiltra);
+        spinbox_minimum->setObjectName("spinbox_minimum");
+        spinbox_minimum->setMinimum(-99.989999999999995);
+
+        horizontalLayout->addWidget(spinbox_minimum);
+
+
+        verticalLayout->addLayout(horizontalLayout);
+
+        horizontalLayout_2 = new QHBoxLayout();
+        horizontalLayout_2->setObjectName("horizontalLayout_2");
+        horizontalLayout_2->setSizeConstraint(QLayout::SetFixedSize);
+        label_maksimum = new QLabel(groupBox_UstawieniaFiltra);
+        label_maksimum->setObjectName("label_maksimum");
+        label_maksimum->setFont(font1);
+        label_maksimum->setTextFormat(Qt::AutoText);
+        label_maksimum->setAlignment(Qt::AlignCenter);
+
+        horizontalLayout_2->addWidget(label_maksimum);
+
+        spinbox_maksimum = new QDoubleSpinBox(groupBox_UstawieniaFiltra);
+        spinbox_maksimum->setObjectName("spinbox_maksimum");
+        spinbox_maksimum->setMinimum(-99.989999999999995);
+
+        horizontalLayout_2->addWidget(spinbox_maksimum);
+
+
+        verticalLayout->addLayout(horizontalLayout_2);
+
+
+        horizontalLayout_11->addLayout(verticalLayout);
+
+        checkBox = new QCheckBox(groupBox_UstawieniaFiltra);
+        checkBox->setObjectName("checkBox");
+
+        horizontalLayout_11->addWidget(checkBox);
+
+
+        horizontalLayout_3->addWidget(groupBox_UstawieniaFiltra);
+
+
+        horizontalLayout_15->addLayout(horizontalLayout_3);
+
+        verticalLayout_2 = new QVBoxLayout();
+        verticalLayout_2->setObjectName("verticalLayout_2");
+        verticalLayout_2->setSizeConstraint(QLayout::SetFixedSize);
+        button_zapisz = new QPushButton(centralwidget);
+        button_zapisz->setObjectName("button_zapisz");
+        button_zapisz->setFont(font);
+
+        verticalLayout_2->addWidget(button_zapisz);
+
+        button_wczytaj = new QPushButton(centralwidget);
+        button_wczytaj->setObjectName("button_wczytaj");
+        button_wczytaj->setFont(font);
+
+        verticalLayout_2->addWidget(button_wczytaj);
+
+
+        horizontalLayout_15->addLayout(verticalLayout_2);
+
+        horizontalLayout_15->setStretch(1, 1);
+
+        gridLayout->addLayout(horizontalLayout_15, 2, 0, 1, 1);
+
         Symulator->setCentralWidget(centralwidget);
         menubar = new QMenuBar(Symulator);
         menubar->setObjectName("menubar");
-        menubar->setGeometry(QRect(0, 0, 1340, 21));
+        menubar->setGeometry(QRect(0, 0, 1203, 21));
         Symulator->setMenuBar(menubar);
         statusbar = new QStatusBar(Symulator);
         statusbar->setObjectName("statusbar");
         Symulator->setStatusBar(statusbar);
+        QWidget::setTabOrder(button_zapisz, button_wczytaj);
+        QWidget::setTabOrder(button_wczytaj, spinbox_D);
+        QWidget::setTabOrder(spinbox_D, spinbox_I);
+        QWidget::setTabOrder(spinbox_I, spinbox_P);
+        QWidget::setTabOrder(spinbox_P, spinbox_k);
+        QWidget::setTabOrder(spinbox_k, lineEdit_A);
+        QWidget::setTabOrder(lineEdit_A, list_WartoscZadana);
+        QWidget::setTabOrder(list_WartoscZadana, button_start);
+        QWidget::setTabOrder(button_start, spinbox_maksimumY);
+        QWidget::setTabOrder(spinbox_maksimumY, spinbox_okres);
+        QWidget::setTabOrder(spinbox_okres, spinbox_maksimum);
+        QWidget::setTabOrder(spinbox_maksimum, spinbox_minimum);
+        QWidget::setTabOrder(spinbox_minimum, checkBox);
+        QWidget::setTabOrder(checkBox, lineEdit_B);
+        QWidget::setTabOrder(lineEdit_B, button_reset);
+        QWidget::setTabOrder(button_reset, button_stop);
+        QWidget::setTabOrder(button_stop, spinbox_interval);
 
         retranslateUi(Symulator);
 
@@ -267,15 +553,19 @@ public:
     void retranslateUi(QMainWindow *Symulator)
     {
         Symulator->setWindowTitle(QCoreApplication::translate("Symulator", "Symulator", nullptr));
-        button_zapisz->setText(QCoreApplication::translate("Symulator", "Zapisz do pliku", nullptr));
-        button_wczytaj->setText(QCoreApplication::translate("Symulator", "Wczytaj z pliku", nullptr));
+        button_start->setText(QCoreApplication::translate("Symulator", "Start", nullptr));
+        button_stop->setText(QCoreApplication::translate("Symulator", "Stop", nullptr));
+        button_reset->setText(QCoreApplication::translate("Symulator", "Reset", nullptr));
+        label_interval->setText(QCoreApplication::translate("Symulator", "Interwa\305\202", nullptr));
+        label_ms->setText(QCoreApplication::translate("Symulator", "(w ms)", nullptr));
         groupBox_PID->setTitle(QCoreApplication::translate("Symulator", "PID", nullptr));
-        label_D->setText(QCoreApplication::translate("Symulator", "D", nullptr));
         label_P->setText(QCoreApplication::translate("Symulator", "P", nullptr));
         label_I->setText(QCoreApplication::translate("Symulator", "I", nullptr));
+        label_D->setText(QCoreApplication::translate("Symulator", "D", nullptr));
         groupBox_ARX->setTitle(QCoreApplication::translate("Symulator", "ARX", nullptr));
-        label_A->setText(QCoreApplication::translate("Symulator", "A", nullptr));
+        label->setText(QCoreApplication::translate("Symulator", "Format: 0.0, 0.6, 0.4...", nullptr));
         label_k->setText(QCoreApplication::translate("Symulator", "Szum", nullptr));
+        label_A->setText(QCoreApplication::translate("Symulator", "A", nullptr));
         label_B->setText(QCoreApplication::translate("Symulator", "B", nullptr));
         groupBox_WartoscZadana->setTitle(QCoreApplication::translate("Symulator", "Warto\305\233\304\207 Zadana", nullptr));
         label_maksimumY->setText(QCoreApplication::translate("Symulator", "Max Y", nullptr));
@@ -284,11 +574,8 @@ public:
         label_minimum->setText(QCoreApplication::translate("Symulator", "Minimum", nullptr));
         label_maksimum->setText(QCoreApplication::translate("Symulator", "Maksimum", nullptr));
         checkBox->setText(QCoreApplication::translate("Symulator", "U\305\274y\304\207 filtra?", nullptr));
-        button_start->setText(QCoreApplication::translate("Symulator", "Start", nullptr));
-        button_reset->setText(QCoreApplication::translate("Symulator", "Reset", nullptr));
-        button_stop->setText(QCoreApplication::translate("Symulator", "Stop", nullptr));
-        label_interval->setText(QCoreApplication::translate("Symulator", "Interwa\305\202", nullptr));
-        label_ms->setText(QCoreApplication::translate("Symulator", "(w ms)", nullptr));
+        button_zapisz->setText(QCoreApplication::translate("Symulator", "Zapisz do pliku", nullptr));
+        button_wczytaj->setText(QCoreApplication::translate("Symulator", "Wczytaj z pliku", nullptr));
     } // retranslateUi
 
 };
