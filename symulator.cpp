@@ -184,8 +184,8 @@ void Symulator::on_button_wczytaj_clicked()
     ui->spinbox_I->setValue(uklad.get_ki());
     ui->spinbox_D->setValue(uklad.get_kd());
 
-    ui->lineEdit_A->setText(QString::number(uklad.get_lastA()));
-    ui->lineEdit_B->setText(QString::number(uklad.get_lastB()));
+    ui->lineEdit_A->setText(QString::fromStdString(uklad.get_lastA()));
+    ui->lineEdit_B->setText(QString::fromStdString(uklad.get_lastB()));
 
     ui->spinbox_minimum->setValue(uklad.get_dolnyLimit());
     ui->spinbox_maksimum->setValue(uklad.get_gornyLimit());

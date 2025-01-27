@@ -64,9 +64,31 @@ public:
         y_hist = std::deque<double>(maxSize, 0.0);
     }
 
-    double get_lastA() const { return A.empty() ? 0.0 : A.back(); }
+    std::string get_lastA() const {
+        if (A.empty() == true)
+            return "0.0";
+        else
+        {
+            std::stringstream sa;
+            for (auto i : A) {
+                sa << i << ", ";
+            }
+            return sa.str();
+        }
+    }
 
-    double get_lastB() const { return B.empty() ? 0.0 : B.back(); }
+    std::string get_lastB() const {
+        if (B.empty() == true)
+            return "0.0";
+        else
+        {
+            std::stringstream ss;
+            for (auto i : B) {
+                ss << i << ", ";
+            }
+            return ss.str();
+        }
+         }
 
     double krok(double input) {
         u_hist.pop_front();
@@ -399,8 +421,8 @@ public:
     double getPochodna() const{return kontroler.getPochodna();}
     double get_dolnyLimit() const{return kontroler.get_dolnyLimit();}
     double get_gornyLimit() const{return kontroler.get_gornyLimit();}
-    double get_lastA() const{return model.get_lastA();}
-    double get_lastB() const{return model.get_lastB();}
+    std::string get_lastA() const{return model.get_lastA();}
+    std::string get_lastB() const{return model.get_lastB();}
     int get_okres() const{return wartosc.get_okres();}
     double get_wartoscZadana() const{return wartoscZadana;}
 private:
