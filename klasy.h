@@ -265,10 +265,11 @@ private:
     double calka, bladPoprzedzajacy;
     double dolnyLimit, gornyLimit;
     bool flagaPrzeciwNasyceniowa;
-    //WartZadana* wartosc;
     double blad;
     double pochodna;
     double wyjscie;
+    double maxCalka = 10.0;
+    double maxPochodna = 10.0;
 
 public:
     PIDController(double kp, double ki, double kd, double dolnyLimit = -1.0, double gornyLimit = 1.0)
@@ -276,39 +277,39 @@ public:
         dolnyLimit(dolnyLimit), gornyLimit(gornyLimit), flagaPrzeciwNasyceniowa(false)
     {
     }
+
     PIDController()
         : kp(0.0), ki(0.0), kd(0.0), calka(0.0), bladPoprzedzajacy(0.0),
         dolnyLimit(-1.0), gornyLimit(1.0), flagaPrzeciwNasyceniowa(false)
     {
     }
 
-    double get_kp() const{return kp;}
-    double get_ki() const{return ki;}
-    double get_kd() const{return kd;}
-    double get_dolnyLimit() const{return dolnyLimit;}
-    double get_gornyLimit() const{return gornyLimit;}
-    double getBlad() const{return blad*kp;}
-    double getCalka() const{return calka*ki;}
-    double getPochodna() const{return pochodna*kd;}
-    double getWyjscie() const{return wyjscie;}
+    double get_kp() const { return kp; }
+    double get_ki() const { return ki; }
+    double get_kd() const { return kd; }
+    double get_dolnyLimit() const { return dolnyLimit; }
+    double get_gornyLimit() const { return gornyLimit; }
+    double getBlad() const { return blad * kp; }
+    double getCalka() const { return calka * ki; }
+    double getPochodna() const { return pochodna * kd; }
+    double getWyjscie() const { return wyjscie; }
+
     void ustawLimity(double nizszy, double wyzszy) {
         dolnyLimit = nizszy;
         gornyLimit = wyzszy;
     }
 
-    void setKontroler(double _kp, double _ki, double _kd)
-    {
+    void setKontroler(double _kp, double _ki, double _kd) {
         kp = _kp;
         ki = _ki;
         kd = _kd;
     }
-    void setFlagaPrzeciwnasyceniowa(bool flaga)
-    {
+
+    void setFlagaPrzeciwnasyceniowa(bool flaga) {
         flagaPrzeciwNasyceniowa = flaga;
     }
 
     void reset() {
-        //PIDController(0.0,0.0,0.0,0.0,0.0);
         calka = 0;
         bladPoprzedzajacy = 0;
         blad = 0;
@@ -316,22 +317,34 @@ public:
         wyjscie = 0;
     }
 
+    template <typename T>
+    T filtr(T wartosc, T dolny, T gorny) {
+        return std::max(dolny, std::min(wartosc, gorny));
+    }
+
     double oblicz(double ustawWartosc, double wartoscProcesu) {
         blad = ustawWartosc - wartoscProcesu;
+
         calka += blad;
+        calka = filtr(calka, -maxCalka, maxCalka);
+
         pochodna = blad - bladPoprzedzajacy;
+        pochodna = filtr(pochodna, -maxPochodna, maxPochodna);
         bladPoprzedzajacy = blad;
+
         wyjscie = kp * blad + ki * calka + kd * pochodna;
+
         if (flagaPrzeciwNasyceniowa) {
             wyjscie = filtr(wyjscie, dolnyLimit, gornyLimit);
         }
+
         return wyjscie;
     }
+
     void zapiszText(const std::string& filename) {
         std::ofstream ofs(filename);
         if (!ofs) return;
         ofs << kp << "\n" << ki << "\n" << kd << "\n";
-        //ofs << calka << "\n" << bladPoprzedzajacy << "\n";
         ofs << dolnyLimit << "\n" << gornyLimit << "\n";
         ofs << flagaPrzeciwNasyceniowa << "\n";
     }
@@ -340,12 +353,11 @@ public:
         std::ifstream ifs(nazwaPliku);
         if (!ifs) return;
         ifs >> kp >> ki >> kd;
-        //ifs >> calka >> bladPoprzedzajacy;
         ifs >> dolnyLimit >> gornyLimit;
         ifs >> flagaPrzeciwNasyceniowa;
     }
-
 };
+
 class UkladSterowania
 {
 public:
