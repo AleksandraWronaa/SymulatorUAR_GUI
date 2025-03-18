@@ -88,7 +88,7 @@ public:
             }
             return ss.str();
         }
-         }
+    }
 
     double krok(double input) {
         u_hist.pop_front();
@@ -259,6 +259,11 @@ private:
     bool minMax = 0;
 };
 
+enum class TrybCalkowania {
+    PRE_SUM,
+    POST_SUM
+};
+
 class PIDController {
 private:
     double kp, ki, kd;
@@ -268,19 +273,30 @@ private:
     double blad;
     double pochodna;
     double wyjscie;
-    double maxCalka = 10.0;
-    double maxPochodna = 10.0;
+    double maxCalka;
+    double maxPochodna;
+    TrybCalkowania integralMode;
 
 public:
-    PIDController(double kp, double ki, double kd, double dolnyLimit = -1.0, double gornyLimit = 1.0)
-        : kp(kp), ki(ki), kd(kd), calka(0.0), bladPoprzedzajacy(0.0),
-        dolnyLimit(dolnyLimit), gornyLimit(gornyLimit), flagaPrzeciwNasyceniowa(false)
+    PIDController(double kp, double ki, double kd,
+                  double dolnyLimit = -1.0, double gornyLimit = 1.0,
+                  TrybCalkowania mode = TrybCalkowania::POST_SUM)
+        : kp(kp), ki(ki), kd(kd),
+        calka(0.0), bladPoprzedzajacy(0.0),
+        dolnyLimit(dolnyLimit), gornyLimit(gornyLimit),
+        flagaPrzeciwNasyceniowa(false),
+        maxCalka(10.0), maxPochodna(10.0),
+        integralMode(mode)
     {
     }
 
     PIDController()
-        : kp(0.0), ki(0.0), kd(0.0), calka(0.0), bladPoprzedzajacy(0.0),
-        dolnyLimit(-1.0), gornyLimit(1.0), flagaPrzeciwNasyceniowa(false)
+        : kp(0.0), ki(0.0), kd(0.0),
+        calka(0.0), bladPoprzedzajacy(0.0),
+        dolnyLimit(-1.0), gornyLimit(1.0),
+        flagaPrzeciwNasyceniowa(false),
+        maxCalka(10.0), maxPochodna(10.0),
+        integralMode(TrybCalkowania::POST_SUM)
     {
     }
 
@@ -289,14 +305,18 @@ public:
     double get_kd() const { return kd; }
     double get_dolnyLimit() const { return dolnyLimit; }
     double get_gornyLimit() const { return gornyLimit; }
-    double getBlad() const { return blad * kp; }
-    double getCalka() const { return calka * ki; }
-    double getPochodna() const { return pochodna * kd; }
+
+    double getCalka() const {
+        return (integralMode == TrybCalkowania::PRE_SUM) ? calka : ki * calka;
+    }
+
+    double getBlad() const { return kp * blad; }
+    double getPochodna() const { return kd * pochodna; }
     double getWyjscie() const { return wyjscie; }
 
-    void ustawLimity(double nizszy, double wyzszy) {
-        dolnyLimit = nizszy;
-        gornyLimit = wyzszy;
+    void ustawLimity(double lower, double upper) {
+        dolnyLimit = lower;
+        gornyLimit = upper;
     }
 
     void setKontroler(double _kp, double _ki, double _kd) {
@@ -305,35 +325,44 @@ public:
         kd = _kd;
     }
 
-    void setFlagaPrzeciwnasyceniowa(bool flaga) {
-        flagaPrzeciwNasyceniowa = flaga;
+    void setFlagaPrzeciwnasyceniowa(bool flag) {
+        flagaPrzeciwNasyceniowa = flag;
+    }
+
+    void setTrybCalkowania(TrybCalkowania mode) {
+        integralMode = mode;
+        reset();
     }
 
     void reset() {
-        calka = 0;
-        bladPoprzedzajacy = 0;
-        blad = 0;
-        pochodna = 0;
-        wyjscie = 0;
+        calka = 0.0;
+        bladPoprzedzajacy = 0.0;
+        blad = 0.0;
+        pochodna = 0.0;
+        wyjscie = 0.0;
     }
 
     template <typename T>
-    T filtr(T wartosc, T dolny, T gorny) {
-        return std::max(dolny, std::min(wartosc, gorny));
+    T filtr(T value, T lower, T upper) {
+        return std::max(lower, std::min(value, upper));
     }
 
-    double oblicz(double ustawWartosc, double wartoscProcesu) {
+    double oblicz(double ustawWartosc, double wartoscProcesu, double dt) {
+        if (dt <= 0.0) {
+            dt = 1.0;
+        }
         blad = ustawWartosc - wartoscProcesu;
-
-        calka += blad;
+        if (integralMode == TrybCalkowania::PRE_SUM) {
+            calka += ki * blad * dt;
+        } else {
+            calka += blad * dt;
+        }
         calka = filtr(calka, -maxCalka, maxCalka);
-
-        pochodna = blad - bladPoprzedzajacy;
+        pochodna = (blad - bladPoprzedzajacy) / dt;
         pochodna = filtr(pochodna, -maxPochodna, maxPochodna);
         bladPoprzedzajacy = blad;
-
-        wyjscie = kp * blad + ki * calka + kd * pochodna;
-
+        double integralContribution = (integralMode == TrybCalkowania::PRE_SUM) ? calka : ki * calka;
+        wyjscie = kp * blad + integralContribution + kd * pochodna;
         if (flagaPrzeciwNasyceniowa) {
             wyjscie = filtr(wyjscie, dolnyLimit, gornyLimit);
         }
@@ -347,14 +376,20 @@ public:
         ofs << kp << "\n" << ki << "\n" << kd << "\n";
         ofs << dolnyLimit << "\n" << gornyLimit << "\n";
         ofs << flagaPrzeciwNasyceniowa << "\n";
+        ofs << maxCalka << "\n" << maxPochodna << "\n";
+        ofs << static_cast<int>(integralMode) << "\n";
     }
 
     void wczytajText(const std::string& nazwaPliku) {
         std::ifstream ifs(nazwaPliku);
         if (!ifs) return;
+        int modeInt;
         ifs >> kp >> ki >> kd;
         ifs >> dolnyLimit >> gornyLimit;
         ifs >> flagaPrzeciwNasyceniowa;
+        ifs >> maxCalka >> maxPochodna;
+        ifs >> modeInt;
+        integralMode = static_cast<TrybCalkowania>(modeInt);
     }
 };
 
@@ -401,7 +436,7 @@ public:
     {
 
         wartoscZadana = wartosc.obliczWartosc(krok);
-        double sygnalKontrolny = kontroler.oblicz(wartoscZadana, wartoscProcesu);
+        double sygnalKontrolny = kontroler.oblicz(wartoscZadana, wartoscProcesu, 1.0);
         wartoscProcesu = model.krok(sygnalKontrolny);
         /*
             std::cerr << "Krok: " << i
