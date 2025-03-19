@@ -51,6 +51,10 @@ private slots:
 
     void on_lineEdit_B_editingFinished(); // Obsługa dla współczynników B
 
+    void on_button_reset_pid_clicked();
+
+    void on_comboBox_mode_currentIndexChanged(int index);
+
 private:
     Ui::Symulator *ui;
     QTimer *timer = nullptr;

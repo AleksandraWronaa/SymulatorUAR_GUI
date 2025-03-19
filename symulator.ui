@@ -290,6 +290,16 @@
              </item>
             </layout>
            </item>
+           <item>
+            <widget class="QPushButton" name="button_reset_pid">
+             <property name="text">
+              <string>Reset</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="comboBox_mode"/>
+           </item>
           </layout>
          </widget>
         </item>

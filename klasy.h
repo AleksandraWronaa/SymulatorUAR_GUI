@@ -391,6 +391,10 @@ public:
         ifs >> modeInt;
         integralMode = static_cast<TrybCalkowania>(modeInt);
     }
+
+    TrybCalkowania getTrybCalkowania() const {
+        return integralMode;
+    }
 };
 
 class UkladSterowania
@@ -456,6 +460,19 @@ public:
         obliczone = 0.0;
         wartoscZadana=0.0;
     }
+
+    void resetPID() {
+        kontroler.reset();
+    }
+
+    void setTrybCalkowania(TrybCalkowania mode) {
+        kontroler.setTrybCalkowania(mode);
+    }
+
+    TrybCalkowania getPIDMode() const {
+        return kontroler.getTrybCalkowania();
+    }
+
 
     int get_rodzajLiczba() const { return wartosc.get_rodzajLiczba();}
     double get_max() const{return wartosc.get_max();}

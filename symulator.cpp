@@ -29,6 +29,18 @@ Symulator::Symulator(QWidget *parent)
 {
     ui->setupUi(this);
 
+    connect(ui->button_reset_pid, SIGNAL(clicked()), this, SLOT(on_button_reset_pid_clicked()));
+    connect(ui->comboBox_mode, SIGNAL(currentIndexChanged(int)), this, SLOT(on_comboBox_mode_currentIndexChanged(int)));
+
+    // Inicjalne ustawienie wartości
+    ui->comboBox_mode->addItem("PRE_SUM");
+    ui->comboBox_mode->addItem("POST_SUM");
+
+    // Pobranie aktualnego trybu z kontrolera i ustawienie w ComboBox
+    TrybCalkowania currentMode = uklad.getPIDMode(); // Musisz dodać tę funkcję w UkladSterowania
+    int modeIndex = (currentMode == TrybCalkowania::PRE_SUM) ? 0 : 1;
+    ui->comboBox_mode->setCurrentIndex(modeIndex);
+
     QStringList WartoscZadana ={"Skok jednostkowy","Sinusoidalny","Sygnał prostokątny"};    //Ustawianie tekstu dla tabeli Wartość Zadana
     foreach(QString item, WartoscZadana){
         ui->list_WartoscZadana->addItem(item);
@@ -312,3 +324,19 @@ void Symulator::on_lineEdit_B_editingFinished() {
     B = newB;
     uklad.setARX(A, B, ui->spinbox_k->value());
 }
+
+void Symulator::on_button_reset_pid_clicked()
+{
+    uklad.reset();
+    ui->spinbox_P->setValue(uklad.get_kp());
+    ui->spinbox_I->setValue(uklad.get_ki());
+    ui->spinbox_D->setValue(uklad.get_kd());
+}
+
+void Symulator::on_comboBox_mode_currentIndexChanged(int index)
+{
+    TrybCalkowania mode = (index == 0) ? TrybCalkowania::PRE_SUM : TrybCalkowania::POST_SUM;
+    uklad.setPID(uklad.get_kp(), uklad.get_ki(), uklad.get_kd());
+    uklad.setTrybCalkowania(mode);
+}
+
