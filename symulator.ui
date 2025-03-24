@@ -324,98 +324,11 @@
               <enum>QLayout::SetFixedSize</enum>
              </property>
              <item>
-              <widget class="QLabel" name="label">
+              <widget class="QPushButton" name="arxModify">
                <property name="text">
-                <string>Format: 0.0, 0.6, 0.4...</string>
+                <string>Modyfikuj</string>
                </property>
               </widget>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_7">
-               <property name="sizeConstraint">
-                <enum>QLayout::SetFixedSize</enum>
-               </property>
-               <item>
-                <widget class="QLabel" name="label_k">
-                 <property name="font">
-                  <font>
-                   <pointsize>12</pointsize>
-                   <bold>true</bold>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string>Szum</string>
-                 </property>
-                 <property name="textFormat">
-                  <enum>Qt::AutoText</enum>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignCenter</set>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QDoubleSpinBox" name="spinbox_k"/>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_8">
-               <property name="sizeConstraint">
-                <enum>QLayout::SetFixedSize</enum>
-               </property>
-               <item>
-                <widget class="QLabel" name="label_A">
-                 <property name="font">
-                  <font>
-                   <pointsize>12</pointsize>
-                   <bold>true</bold>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string>A</string>
-                 </property>
-                 <property name="textFormat">
-                  <enum>Qt::AutoText</enum>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignCenter</set>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLineEdit" name="lineEdit_A"/>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_9">
-               <property name="sizeConstraint">
-                <enum>QLayout::SetFixedSize</enum>
-               </property>
-               <item>
-                <widget class="QLabel" name="label_B">
-                 <property name="font">
-                  <font>
-                   <pointsize>12</pointsize>
-                   <bold>true</bold>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string>B</string>
-                 </property>
-                 <property name="textFormat">
-                  <enum>Qt::AutoText</enum>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignCenter</set>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLineEdit" name="lineEdit_B"/>
-               </item>
-              </layout>
              </item>
             </layout>
            </item>
@@ -680,8 +593,6 @@
   <tabstop>spinbox_D</tabstop>
   <tabstop>spinbox_I</tabstop>
   <tabstop>spinbox_P</tabstop>
-  <tabstop>spinbox_k</tabstop>
-  <tabstop>lineEdit_A</tabstop>
   <tabstop>list_WartoscZadana</tabstop>
   <tabstop>button_start</tabstop>
   <tabstop>spinbox_maksimumY</tabstop>
@@ -689,7 +600,6 @@
   <tabstop>spinbox_maksimum</tabstop>
   <tabstop>spinbox_minimum</tabstop>
   <tabstop>checkBox</tabstop>
-  <tabstop>lineEdit_B</tabstop>
   <tabstop>button_reset</tabstop>
   <tabstop>button_stop</tabstop>
   <tabstop>spinbox_interval</tabstop>

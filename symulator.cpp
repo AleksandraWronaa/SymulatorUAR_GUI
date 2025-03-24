@@ -122,10 +122,14 @@ void Symulator::nextStep()
     obecnaWartosc = uklad.symulacja(krok);
     krok++;
     //ui->label_wartosc->setNum(obecnaWartosc);
-    uklad.setARX(A,B,ui->spinbox_k->value());
+    uklad.setARX(A,B,szum);
     uklad.setPID(ui->spinbox_P->value(),ui->spinbox_I->value(),ui->spinbox_D->value(),ui->spinbox_minimum->value(),ui->spinbox_maksimum->value());
     uklad.setWartosc(WartoscZadana,ui->spinbox_maksimumY->value(),ui->spinbox_okres->value());
 
+
+
+
+    //rysowanie wykresów dalej
     ui->wykres->graph(0)->addData(krok, obecnaWartosc);
     ui->wykres->graph(1)->addData(krok, uklad.get_wartoscZadana());
     ui->wykres->yAxis->setRange(uklad.get_max()*0.5*-1,std::max(uklad.get_max(), obecnaWartosc)*1.2);
@@ -196,8 +200,8 @@ void Symulator::on_button_wczytaj_clicked()
     ui->spinbox_I->setValue(uklad.get_ki());
     ui->spinbox_D->setValue(uklad.get_kd());
 
-    ui->lineEdit_A->setText(QString::fromStdString(uklad.get_lastA()));
-    ui->lineEdit_B->setText(QString::fromStdString(uklad.get_lastB()));
+    //ui->lineEdit_A->setText(QString::fromStdString(uklad.get_lastA()));
+    //ui->lineEdit_B->setText(QString::fromStdString(uklad.get_lastB()));
 
     ui->spinbox_minimum->setValue(uklad.get_dolnyLimit());
     ui->spinbox_maksimum->setValue(uklad.get_gornyLimit());
@@ -220,11 +224,11 @@ void Symulator::on_button_reset_clicked()
     //A.push_back(ui->spinbox_A->value());
     //B.push_back(ui->spinbox_B->value());
     // Reset współczynników A i B
-    A = parseValues(ui->lineEdit_A->text().toStdString());
-    B = parseValues(ui->lineEdit_B->text().toStdString());
+    A = {0.0};
+    B = {0.0};
 
-    uklad.setARX(A, B, ui->spinbox_k->value());
-    uklad.setARX(A,B,ui->spinbox_k->value());
+    uklad.setARX(A, B, szum);
+    uklad.setARX(A,B,szum);
     uklad.setPID(ui->spinbox_P->value(),ui->spinbox_I->value(),ui->spinbox_D->value(),ui->spinbox_minimum->value(),ui->spinbox_maksimum->value());
     uklad.setWartosc(WartoscZadana,ui->spinbox_maksimumY->value(),ui->spinbox_okres->value());
 
@@ -275,7 +279,7 @@ void Symulator::on_button_start_clicked()
     ui->button_start->setEnabled(false);
     ui->button_stop->setEnabled(true);
     timer->start();
-    uklad.setARX(A,B,ui->spinbox_k->value());
+    uklad.setARX(A,B,szum);
     uklad.setPID(ui->spinbox_P->value(),ui->spinbox_I->value(),ui->spinbox_D->value(),ui->spinbox_minimum->value(),ui->spinbox_maksimum->value());
     uklad.setWartosc(WartoscZadana,ui->spinbox_maksimumY->value(),ui->spinbox_okres->value());
 
@@ -312,17 +316,11 @@ void Symulator::on_checkBox_stateChanged(int arg1)
 }
 
 void Symulator::on_lineEdit_A_editingFinished() {
-    std::string inputA = ui->lineEdit_A->text().toStdString();
-    std::vector<double> newA = parseValues(inputA);
-    A = newA;
-    uklad.setARX(A, B, ui->spinbox_k->value());
+
 }
 
 void Symulator::on_lineEdit_B_editingFinished() {
-    std::string inputB = ui->lineEdit_B->text().toStdString();
-    std::vector<double> newB = parseValues(inputB);
-    B = newB;
-    uklad.setARX(A, B, ui->spinbox_k->value());
+
 }
 
 void Symulator::on_button_reset_pid_clicked()
@@ -339,4 +337,29 @@ void Symulator::on_comboBox_mode_currentIndexChanged(int index)
     uklad.setPID(uklad.get_kp(), uklad.get_ki(), uklad.get_kd());
     uklad.setTrybCalkowania(mode);
 }
+
+
+
+
+void Symulator::on_arxModify_clicked()
+{
+    dialog = new Dialog(nullptr);
+    int result = dialog->exec();
+    if(result)
+    {
+        A = dialog->getA();
+        B = dialog->getB();
+        szum = dialog->getSzum();
+
+    }
+
+
+    delete dialog;
+}
+
+
+//void Symulator::on_spinbox_k_valueChanged(double arg1)
+//{
+
+//}
 

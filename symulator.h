@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QTimer>
 #include "klasy.h"
+#include "dialog.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -12,6 +13,7 @@ class Symulator;
 QT_END_NAMESPACE
 
 
+    std::vector<double> parseValues(const std::string& input);
 
 class Symulator : public QMainWindow
 {
@@ -55,14 +57,24 @@ private slots:
 
     void on_comboBox_mode_currentIndexChanged(int index);
 
+    void on_arxModify_clicked();
+
+    void on_spinbox_k_valueChanged(double arg1);
+
+
+
 private:
     Ui::Symulator *ui;
     QTimer *timer = nullptr;
     UkladSterowania uklad;
     std::vector<double> A;
     std::vector<double> B;
+    double szum;
     rodzajeWartosci WartoscZadana;
     int krok = 0;
     double obecnaWartosc;
+    Dialog *dialog;
+
+    friend Dialog;
 };
 #endif // SYMULATOR_H
