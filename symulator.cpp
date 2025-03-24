@@ -287,6 +287,7 @@ void Symulator::on_button_start_clicked()
 }
 
 
+
 void Symulator::on_button_stop_clicked()
 {
     ui->button_start->setEnabled(true);

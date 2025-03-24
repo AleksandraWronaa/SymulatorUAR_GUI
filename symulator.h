@@ -59,7 +59,6 @@ private slots:
 
     void on_arxModify_clicked();
 
-    void on_spinbox_k_valueChanged(double arg1);
 
 
 
