@@ -17,6 +17,7 @@ public:
     std::vector<double> getA();
     std::vector<double> getB();
     double getSzum();
+    int getDelay();
 
 private slots:
     void on_szumDialog_valueChanged(double arg1);

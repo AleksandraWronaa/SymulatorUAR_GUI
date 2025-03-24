@@ -31,6 +31,7 @@ public:
     QSplitter *splitter;
     QLabel *label_3;
     QDoubleSpinBox *szumDialog;
+    QSpinBox *spinbox_delay;
     QSplitter *splitter_2;
     QLabel *label;
     QLineEdit *ADialog;

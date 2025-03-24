@@ -18,6 +18,7 @@ private:
     std::default_random_engine generator;
     std::unique_ptr<std::normal_distribution<double>> dystrybucja;
     double sigma;
+    int opoznienie = 1;
 
 public:
     ARXModel(const std::vector<double>& a, const std::vector<double>& b, double szum = 0.0)
@@ -42,7 +43,7 @@ public:
         y_hist = std::deque<double>(maxSize, 0.0);
     }
 
-    void setModel(const std::vector<double>& a, const std::vector<double>& b, double szum = 0.0) {
+    void setModel(const std::vector<double>& a, const std::vector<double>& b, double szum = 0.0, int opoznienieTransportowe = 1) {
         A = a;
         B = b;
         sigma = szum;
@@ -51,6 +52,7 @@ public:
         } else {
             dystrybucja = nullptr;
         }
+        opoznienie = std::max(1, opoznienieTransportowe);
         size_t maxSize = std::max(A.size(), B.size());
         u_hist = std::deque<double>(maxSize, 0.0);
         y_hist = std::deque<double>(maxSize, 0.0);
@@ -59,7 +61,7 @@ public:
     void updateCoefficients(const std::vector<double>& newA, const std::vector<double>& newB) {
         A = newA;
         B = newB;
-        size_t maxSize = std::max(A.size(), B.size());
+        size_t maxSize = std::max(A.size(), B.size()) + opoznienie;
         u_hist = std::deque<double>(maxSize, 0.0);
         y_hist = std::deque<double>(maxSize, 0.0);
     }
@@ -106,12 +108,17 @@ public:
         }
 
         for (size_t i = 0; i < B.size(); i++) {
-            y_k += B[i] * u_hist[u_hist.size() - 1 - i];
+            size_t index = u_hist.size() - 1 - i - opoznienie;
+            if (u_hist.size() > i + opoznienie) {
+                y_k += B[i] * u_hist[index];
+            }
         }
 
         y_k += szum;
+
         y_hist.pop_front();
         y_hist.push_back(y_k);
+
         return y_k;
     }
 
@@ -411,9 +418,9 @@ public:
         kontroler.ustawLimity(dolnyLimit, gornyLimit);
     }
 
-    void setARX(const std::vector<double>& a, const std::vector<double>& b, double szum = 0.01)
+    void setARX(const std::vector<double>& a, const std::vector<double>& b, double szum = 0.01, int opoznienie = 1)
     {
-        model.setModel(a, b, szum);
+        model.setModel(a, b, szum, opoznienie);
     }
 
     void setWartosc(rodzajeWartosci rodzaj, double max, int okres)
