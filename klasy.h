@@ -96,7 +96,7 @@ public:
 
         for (size_t i = 0; i < B.size(); i++) {
             size_t index = u_hist.size() - 1 - i - opoznienie;
-            if (u_hist.size() > i + opoznienie) {
+            if (index < u_hist.size()) {
                 y_k += B[i] * u_hist[index];
             }
         }
@@ -147,10 +147,13 @@ public:
     }
 
     void reset() {
-        A.clear();
-        B.clear();
+        //A.clear();
+        //B.clear();
         u_hist.clear();
         y_hist.clear();
+        size_t maxSize = std::max(A.size(), B.size()) + opoznienie;
+        u_hist = std::deque<double>(maxSize, 0.0);
+        y_hist = std::deque<double>(maxSize, 0.0);
     }
 };
 
