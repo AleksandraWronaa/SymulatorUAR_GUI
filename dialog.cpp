@@ -53,3 +53,7 @@ void Dialog::on_BDialog_editingFinished()
 
 }
 
+int Dialog::getDelay()
+{
+    return ui->spinbox_delay->value();
+}

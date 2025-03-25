@@ -73,6 +73,7 @@ private:
     int krok = 0;
     double obecnaWartosc;
     Dialog *dialog;
+    int delay = 1;
 
     friend Dialog;
 };

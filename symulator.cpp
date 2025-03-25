@@ -121,10 +121,12 @@ void Symulator::nextStep()
 {
     obecnaWartosc = uklad.symulacja(krok);
     krok++;
-    //ui->label_wartosc->setNum(obecnaWartosc);
-    uklad.setARX(A,B,szum);
-    uklad.setPID(ui->spinbox_P->value(),ui->spinbox_I->value(),ui->spinbox_D->value(),ui->spinbox_minimum->value(),ui->spinbox_maksimum->value());
-    uklad.setWartosc(WartoscZadana,ui->spinbox_maksimumY->value(),ui->spinbox_okres->value(), ui->spinBox_wypelnienie->value());
+
+    //uklad.setARX(A, B, szum, delay);
+    uklad.setPID(ui->spinbox_P->value(), ui->spinbox_I->value(), ui->spinbox_D->value(),
+                 ui->spinbox_minimum->value(), ui->spinbox_maksimum->value());
+    uklad.setWartosc(WartoscZadana, ui->spinbox_maksimumY->value(), ui->spinbox_okres->value(), ui->spinBox_wypelnienie->value());
+
 
 
 
@@ -221,14 +223,7 @@ void Symulator::on_button_reset_clicked()
     uklad.reset();
     krok = 0;
 
-    //A.push_back(ui->spinbox_A->value());
-    //B.push_back(ui->spinbox_B->value());
-    // Reset współczynników A i B
-    A = {0.0};
-    B = {0.0};
-
-    uklad.setARX(A, B, szum);
-    uklad.setARX(A,B,szum);
+    uklad.setARX(A, B, szum, delay);
     uklad.setPID(ui->spinbox_P->value(),ui->spinbox_I->value(),ui->spinbox_D->value(),ui->spinbox_minimum->value(),ui->spinbox_maksimum->value());
     uklad.setWartosc(WartoscZadana,ui->spinbox_maksimumY->value(),ui->spinbox_okres->value(), ui->spinBox_wypelnienie->value());
 
@@ -279,9 +274,12 @@ void Symulator::on_button_start_clicked()
     ui->button_start->setEnabled(false);
     ui->button_stop->setEnabled(true);
     timer->start();
-    uklad.setARX(A,B,szum);
-    uklad.setPID(ui->spinbox_P->value(),ui->spinbox_I->value(),ui->spinbox_D->value(),ui->spinbox_minimum->value(),ui->spinbox_maksimum->value());
-    uklad.setWartosc(WartoscZadana,ui->spinbox_maksimumY->value(),ui->spinbox_okres->value(), ui->spinBox_wypelnienie->value());
+
+    uklad.setARX(A, B, szum, delay);
+    uklad.setPID(ui->spinbox_P->value(), ui->spinbox_I->value(), ui->spinbox_D->value(),
+    ui->spinbox_minimum->value(), ui->spinbox_maksimum->value());
+    uklad.setWartosc(WartoscZadana, ui->spinbox_maksimumY->value(), ui->spinbox_okres->value(), ui->spinBox_wypelnienie->value());
+
 
 
 }
@@ -351,7 +349,8 @@ void Symulator::on_arxModify_clicked()
         A = dialog->getA();
         B = dialog->getB();
         szum = dialog->getSzum();
-
+        delay = dialog->getDelay();
+        uklad.setARX(A, B, szum, delay);
     }
 
 

@@ -19,6 +19,7 @@ private:
     std::default_random_engine generator;
     std::unique_ptr<std::normal_distribution<double>> dystrybucja;
     double sigma;
+    int opoznienie = 1;
 
 public:
     ARXModel(const std::vector<double>& a, const std::vector<double>& b, double szum = 0.0)
@@ -28,31 +29,33 @@ public:
         } else {
             dystrybucja = nullptr;
         }
-        size_t maxSize = std::max(A.size(), B.size());
+        size_t maxSize = std::max(A.size(), B.size()) + opoznienie;
         u_hist = std::deque<double>(maxSize, 0.0);
         y_hist = std::deque<double>(maxSize, 0.0);
     }
 
-    ARXModel()
-        : sigma(0.0) {
-        A = std::vector<double>({ 0.0 });
-        B = std::vector<double>({ 0.0 });
+    ARXModel() : sigma(0.0) {
+        A = { 0.0 };
+        B = { 0.0 };
         dystrybucja = nullptr;
-        size_t maxSize = std::max(A.size(), B.size());
+        size_t maxSize = std::max(A.size(), B.size()) + opoznienie;
         u_hist = std::deque<double>(maxSize, 0.0);
         y_hist = std::deque<double>(maxSize, 0.0);
     }
 
-    void setModel(const std::vector<double>& a, const std::vector<double>& b, double szum = 0.0) {
+    void setModel(const std::vector<double>& a, const std::vector<double>& b, double szum = 0.0, int opoznienieTransportowe = 1) {
         A = a;
         B = b;
         sigma = szum;
+        opoznienie = std::max(1, opoznienieTransportowe);
+
         if (sigma > 0.0) {
             dystrybucja = std::make_unique<std::normal_distribution<double>>(0.0, sigma);
         } else {
             dystrybucja = nullptr;
         }
-        size_t maxSize = std::max(A.size(), B.size());
+
+        size_t maxSize = std::max(A.size(), B.size()) + opoznienie;
         u_hist = std::deque<double>(maxSize, 0.0);
         y_hist = std::deque<double>(maxSize, 0.0);
     }
@@ -60,59 +63,49 @@ public:
     void updateCoefficients(const std::vector<double>& newA, const std::vector<double>& newB) {
         A = newA;
         B = newB;
-        size_t maxSize = std::max(A.size(), B.size());
+        size_t maxSize = std::max(A.size(), B.size()) + opoznienie;
         u_hist = std::deque<double>(maxSize, 0.0);
         y_hist = std::deque<double>(maxSize, 0.0);
     }
 
     std::string get_lastA() const {
-        if (A.empty() == true)
-            return "0.0";
-        else
-        {
-            std::stringstream sa;
-            for (auto i : A) {
-                sa << i << ", ";
-            }
-            return sa.str();
-        }
+        if (A.empty()) return "0.0";
+        std::stringstream sa;
+        for (auto i : A) sa << i << ", ";
+        return sa.str();
     }
 
     std::string get_lastB() const {
-        if (B.empty() == true)
-            return "0.0";
-        else
-        {
-            std::stringstream ss;
-            for (auto i : B) {
-                ss << i << ", ";
-            }
-            return ss.str();
-        }
+        if (B.empty()) return "0.0";
+        std::stringstream sb;
+        for (auto i : B) sb << i << ", ";
+        return sb.str();
     }
 
     double krok(double input) {
         u_hist.pop_front();
         u_hist.push_back(input);
 
-        double szum = 0.0;
-        if (dystrybucja) {
-            szum = (*dystrybucja)(generator);
-        }
-
+        double szum = dystrybucja ? (*dystrybucja)(generator) : 0.0;
         double y_k = 0.0;
 
         for (size_t i = 0; i < A.size(); i++) {
-            y_k -= A[i] * y_hist[y_hist.size() - 1 - i];
+            if (y_hist.size() > i)
+                y_k -= A[i] * y_hist[y_hist.size() - 1 - i];
         }
 
         for (size_t i = 0; i < B.size(); i++) {
-            y_k += B[i] * u_hist[u_hist.size() - 1 - i];
+            size_t index = u_hist.size() - 1 - i - opoznienie;
+            if (index < u_hist.size()) {
+                y_k += B[i] * u_hist[index];
+            }
         }
 
         y_k += szum;
+
         y_hist.pop_front();
         y_hist.push_back(y_k);
+
         return y_k;
     }
 
@@ -134,16 +127,14 @@ public:
         size_t rozmiarA, rozmiarB;
         double wartA, wartB;
         ifs >> rozmiarA;
-        A.clear();
-        A.reserve(rozmiarA);
+        A.clear(); A.reserve(rozmiarA);
         for (size_t i = 0; i < rozmiarA; ++i) {
             ifs >> wartA;
             A.push_back(wartA);
         }
 
         ifs >> rozmiarB;
-        B.clear();
-        B.reserve(rozmiarB);
+        B.clear(); B.reserve(rozmiarB);
         for (size_t i = 0; i < rozmiarB; ++i) {
             ifs >> wartB;
             B.push_back(wartB);
@@ -152,18 +143,17 @@ public:
         double mean, stddev;
         ifs >> mean >> stddev;
         sigma = stddev;
-        if (sigma > 0.0) {
-            dystrybucja = std::make_unique<std::normal_distribution<double>>(mean, sigma);
-        } else {
-            dystrybucja = nullptr;
-        }
+        dystrybucja = (sigma > 0.0) ? std::make_unique<std::normal_distribution<double>>(mean, sigma) : nullptr;
     }
 
     void reset() {
-        A.clear();
-        B.clear();
+        //A.clear();
+        //B.clear();
         u_hist.clear();
         y_hist.clear();
+        size_t maxSize = std::max(A.size(), B.size()) + opoznienie;
+        u_hist = std::deque<double>(maxSize, 0.0);
+        y_hist = std::deque<double>(maxSize, 0.0);
     }
 };
 
@@ -418,9 +408,9 @@ public:
         kontroler.ustawLimity(dolnyLimit, gornyLimit);
     }
 
-    void setARX(const std::vector<double>& a, const std::vector<double>& b, double szum = 0.01)
+    void setARX(const std::vector<double>& a, const std::vector<double>& b, double szum = 0.01, int opoznienie = 1)
     {
-        model.setModel(a, b, szum);
+        model.setModel(a, b, szum, opoznienie);
     }
 
     void setWartosc(rodzajeWartosci rodzaj, double max, int okres, int wyp)
