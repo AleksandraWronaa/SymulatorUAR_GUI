@@ -134,7 +134,30 @@ void Symulator::nextStep()
     //rysowanie wykresów dalej
     ui->wykres->graph(0)->addData(krok, obecnaWartosc);
     ui->wykres->graph(1)->addData(krok, uklad.get_wartoscZadana());
-    ui->wykres->yAxis->setRange(uklad.get_max()*0.5*-1,std::max(uklad.get_max(), obecnaWartosc)*1.2);
+
+    if(krok>100){
+
+        rozmiar_wykresu_min.erase(rozmiar_wykresu_min.begin());
+        rozmiar_wykresu_kontroler_min.erase(rozmiar_wykresu_kontroler_min.begin());
+        rozmiar_wykresu_suma_min.erase(rozmiar_wykresu_suma_min.begin());
+        rozmiar_wykresu_uchyb_min.erase(rozmiar_wykresu_uchyb_min.begin());
+
+        rozmiar_wykresu_max.erase(rozmiar_wykresu_max.begin());
+        rozmiar_wykresu_kontroler_max.erase(rozmiar_wykresu_kontroler_max.begin());
+        rozmiar_wykresu_suma_max.erase(rozmiar_wykresu_suma_max.begin());
+        rozmiar_wykresu_uchyb_max.erase(rozmiar_wykresu_uchyb_max.begin());
+    }
+    rozmiar_wykresu_max.push_back(std::max(uklad.get_max(),obecnaWartosc));
+    rozmiar_wykresu_min.push_back(obecnaWartosc);
+    rozmiar_wykresu_kontroler_max.push_back(std::max(std::max(uklad.getBlad(), uklad.getCalka()), uklad.getPochodna()));
+    rozmiar_wykresu_kontroler_min.push_back(std::min(-1.0,abs(std::min(std::min(uklad.getBlad(), uklad.getCalka()), uklad.getPochodna()))*-1.2));
+    rozmiar_wykresu_uchyb_min.push_back(std::min(-1.0,((uklad.get_wartoscZadana()-obecnaWartosc)*1.2)));
+    rozmiar_wykresu_uchyb_max.push_back(std::max(1.0,((uklad.get_wartoscZadana()-obecnaWartosc)*1.2)));
+    rozmiar_wykresu_suma_min.push_back(std::min(-1.0,((uklad.getWyjscie())*1.2)));
+    rozmiar_wykresu_suma_max.push_back(std::max(1.0,((uklad.getWyjscie())*1.2)));
+
+
+    ui->wykres->yAxis->setRange((*std::min_element(rozmiar_wykresu_min.begin(),rozmiar_wykresu_min.end()))-1,(*std::max_element(rozmiar_wykresu_max.begin(),rozmiar_wykresu_max.end()))*1.2);
     if (krok>100)
         ui->wykres->xAxis->setRange(krok-100,krok+100);
     ui->wykres->replot();
@@ -144,7 +167,7 @@ void Symulator::nextStep()
     ui->wykres_kontroler->graph(2)->addData(krok, uklad.getPochodna());
 
 
-    ui->wykres_kontroler->yAxis->setRange(std::min(-1.0,abs(std::min(std::min(uklad.getBlad(), uklad.getCalka()), uklad.getPochodna()))*-1.2)  ,std::max(std::max(uklad.getBlad(), uklad.getCalka()), uklad.getPochodna())*1.2);
+    ui->wykres_kontroler->yAxis->setRange( (*std::min_element(rozmiar_wykresu_kontroler_min.begin(),rozmiar_wykresu_kontroler_min.end()))-1 ,(*std::max_element(rozmiar_wykresu_kontroler_max.begin(),rozmiar_wykresu_kontroler_max.end()))*1.2);
     if (krok>100)
         ui->wykres_kontroler->xAxis->setRange(krok-100,krok+100);
     ui->wykres_kontroler->replot();
@@ -152,14 +175,14 @@ void Symulator::nextStep()
 
 
     ui->wykres_uchyb->graph(0)->addData(krok, uklad.get_wartoscZadana()-obecnaWartosc);
-    ui->wykres_uchyb->yAxis->setRange(std::min(-1.0,((uklad.get_wartoscZadana()-obecnaWartosc)*1.2)),std::max(1.0,((uklad.get_wartoscZadana()-obecnaWartosc)*1.2)));
+    ui->wykres_uchyb->yAxis->setRange(*std::min_element(rozmiar_wykresu_uchyb_min.begin(),rozmiar_wykresu_uchyb_min.end())-1 ,(*std::max_element(rozmiar_wykresu_uchyb_max.begin(),rozmiar_wykresu_uchyb_max.end()))*1.2);
     if (krok>100)
         ui->wykres_uchyb->xAxis->setRange(krok-100,krok+100);
     ui->wykres_uchyb->replot();
 
 
     ui->wykres_kontroler_suma->graph(0)->addData(krok, uklad.getWyjscie());
-    ui->wykres_kontroler_suma->yAxis->setRange(std::min(-1.0,((uklad.getWyjscie())*1.2)),std::max(1.0,((uklad.getWyjscie())*1.2)));
+    ui->wykres_kontroler_suma->yAxis->setRange(*std::min_element(rozmiar_wykresu_suma_min.begin(),rozmiar_wykresu_suma_min.end())-1,(*std::max_element(rozmiar_wykresu_suma_max.begin(),rozmiar_wykresu_suma_max.end()))*1.2);
     if (krok>100)
         ui->wykres_kontroler_suma->xAxis->setRange(krok-100,krok+100);
     ui->wykres_kontroler_suma->replot();
@@ -222,6 +245,15 @@ void Symulator::on_button_reset_clicked()
 
     uklad.reset();
     krok = 0;
+
+    rozmiar_wykresu_min.clear();
+    rozmiar_wykresu_kontroler_min.clear();
+    rozmiar_wykresu_suma_min.clear();
+    rozmiar_wykresu_uchyb_min.clear();
+    rozmiar_wykresu_max.clear();
+    rozmiar_wykresu_kontroler_max.clear();
+    rozmiar_wykresu_suma_max.clear();
+    rozmiar_wykresu_uchyb_max.clear();
 
     uklad.setARX(A, B, szum, delay);
     uklad.setPID(ui->spinbox_P->value(),ui->spinbox_I->value(),ui->spinbox_D->value(),ui->spinbox_minimum->value(),ui->spinbox_maksimum->value());

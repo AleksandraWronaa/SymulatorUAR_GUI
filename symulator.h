@@ -74,6 +74,13 @@ private:
     double obecnaWartosc;
     Dialog *dialog;
     int delay = 1;
+    std::vector<double> rozmiar_wykresu_min, rozmiar_wykresu_max;
+    std::vector<double> rozmiar_wykresu_kontroler_min,rozmiar_wykresu_kontroler_max;
+    std::vector<double> rozmiar_wykresu_suma_min,rozmiar_wykresu_suma_max;
+    std::vector<double> rozmiar_wykresu_uchyb_min,rozmiar_wykresu_uchyb_max;
+
+    double wykres_kontroler_min=0, wykres_kontroler_max=0;
+
 
     friend Dialog;
 };
