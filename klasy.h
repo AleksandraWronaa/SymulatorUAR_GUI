@@ -8,6 +8,7 @@
 #include <fstream>
 #include <cmath>
 #include <sstream>
+#include <memory>
 
 class ARXModel {
 private:
@@ -38,7 +39,7 @@ public:
         A = std::vector<double>({ 0.0 });
         B = std::vector<double>({ 0.0 });
         dystrybucja = nullptr;
-        size_t maxSize = std::max(A.size(), B.size());
+        size_t maxSize = std::max(A.size(), B.size())+opoznienie;
         u_hist = std::deque<double>(maxSize, 0.0);
         y_hist = std::deque<double>(maxSize, 0.0);
     }
