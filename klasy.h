@@ -8,6 +8,7 @@
 #include <fstream>
 #include <cmath>
 #include <sstream>
+#include <memory>
 
 class ARXModel {
 private:
