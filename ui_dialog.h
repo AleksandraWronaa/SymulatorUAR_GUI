@@ -15,9 +15,11 @@
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QDialogButtonBox>
 #include <QtWidgets/QDoubleSpinBox>
+#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
-#include <QtWidgets/QSplitter>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
 
@@ -25,19 +27,17 @@ class Ui_Dialog
 {
 public:
     QDialogButtonBox *buttonBox;
-    QSplitter *splitter_5;
+    QWidget *layoutWidget;
+    QGridLayout *gridLayout;
     QLabel *label_4;
-    QSplitter *splitter_4;
-    QSplitter *splitter;
     QLabel *label_3;
-    QDoubleSpinBox *szumDialog;
-    QSpinBox *spinbox_delay;
-    QSplitter *splitter_2;
     QLabel *label;
-    QLineEdit *ADialog;
-    QSplitter *splitter_3;
     QLabel *label_2;
     QLineEdit *BDialog;
+    QLineEdit *ADialog;
+    QDoubleSpinBox *szumDialog;
+    QLabel *label_5;
+    QSpinBox *spinbox_delay;
 
     void setupUi(QDialog *Dialog)
     {
@@ -49,51 +49,61 @@ public:
         buttonBox->setGeometry(QRect(30, 240, 341, 32));
         buttonBox->setOrientation(Qt::Horizontal);
         buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
-        splitter_5 = new QSplitter(Dialog);
-        splitter_5->setObjectName("splitter_5");
-        splitter_5->setGeometry(QRect(70, 50, 241, 141));
-        splitter_5->setOrientation(Qt::Vertical);
-        label_4 = new QLabel(splitter_5);
+        layoutWidget = new QWidget(Dialog);
+        layoutWidget->setObjectName("layoutWidget");
+        layoutWidget->setGeometry(QRect(122, 62, 178, 145));
+        gridLayout = new QGridLayout(layoutWidget);
+        gridLayout->setObjectName("gridLayout");
+        gridLayout->setContentsMargins(0, 0, 0, 0);
+        label_4 = new QLabel(layoutWidget);
         label_4->setObjectName("label_4");
         QFont font;
         font.setPointSize(12);
         font.setBold(true);
         label_4->setFont(font);
-        splitter_5->addWidget(label_4);
-        splitter_4 = new QSplitter(splitter_5);
-        splitter_4->setObjectName("splitter_4");
-        splitter_4->setOrientation(Qt::Vertical);
-        splitter = new QSplitter(splitter_4);
-        splitter->setObjectName("splitter");
-        splitter->setOrientation(Qt::Horizontal);
-        label_3 = new QLabel(splitter);
+
+        gridLayout->addWidget(label_4, 0, 0, 1, 4);
+
+        label_3 = new QLabel(layoutWidget);
         label_3->setObjectName("label_3");
-        splitter->addWidget(label_3);
-        szumDialog = new QDoubleSpinBox(splitter);
-        szumDialog->setObjectName("szumDialog");
-        splitter->addWidget(szumDialog);
-        splitter_4->addWidget(splitter);
-        splitter_2 = new QSplitter(splitter_4);
-        splitter_2->setObjectName("splitter_2");
-        splitter_2->setOrientation(Qt::Horizontal);
-        label = new QLabel(splitter_2);
+
+        gridLayout->addWidget(label_3, 1, 0, 1, 2);
+
+        label = new QLabel(layoutWidget);
         label->setObjectName("label");
-        splitter_2->addWidget(label);
-        ADialog = new QLineEdit(splitter_2);
-        ADialog->setObjectName("ADialog");
-        splitter_2->addWidget(ADialog);
-        splitter_4->addWidget(splitter_2);
-        splitter_3 = new QSplitter(splitter_4);
-        splitter_3->setObjectName("splitter_3");
-        splitter_3->setOrientation(Qt::Horizontal);
-        label_2 = new QLabel(splitter_3);
+
+        gridLayout->addWidget(label, 3, 0, 1, 1);
+
+        label_2 = new QLabel(layoutWidget);
         label_2->setObjectName("label_2");
-        splitter_3->addWidget(label_2);
-        BDialog = new QLineEdit(splitter_3);
+
+        gridLayout->addWidget(label_2, 4, 0, 1, 1);
+
+        BDialog = new QLineEdit(layoutWidget);
         BDialog->setObjectName("BDialog");
-        splitter_3->addWidget(BDialog);
-        splitter_4->addWidget(splitter_3);
-        splitter_5->addWidget(splitter_4);
+
+        gridLayout->addWidget(BDialog, 4, 1, 1, 3);
+
+        ADialog = new QLineEdit(layoutWidget);
+        ADialog->setObjectName("ADialog");
+
+        gridLayout->addWidget(ADialog, 3, 1, 1, 3);
+
+        szumDialog = new QDoubleSpinBox(layoutWidget);
+        szumDialog->setObjectName("szumDialog");
+
+        gridLayout->addWidget(szumDialog, 1, 2, 1, 2);
+
+        label_5 = new QLabel(layoutWidget);
+        label_5->setObjectName("label_5");
+
+        gridLayout->addWidget(label_5, 2, 0, 1, 2);
+
+        spinbox_delay = new QSpinBox(layoutWidget);
+        spinbox_delay->setObjectName("spinbox_delay");
+
+        gridLayout->addWidget(spinbox_delay, 2, 2, 1, 2);
+
 
         retranslateUi(Dialog);
         QObject::connect(buttonBox, &QDialogButtonBox::accepted, Dialog, qOverload<>(&QDialog::accept));
@@ -109,6 +119,7 @@ public:
         label_3->setText(QCoreApplication::translate("Dialog", "Szum:", nullptr));
         label->setText(QCoreApplication::translate("Dialog", "A:", nullptr));
         label_2->setText(QCoreApplication::translate("Dialog", "B:", nullptr));
+        label_5->setText(QCoreApplication::translate("Dialog", "Op\303\263\305\272nienie:", nullptr));
     } // retranslateUi
 
 };
