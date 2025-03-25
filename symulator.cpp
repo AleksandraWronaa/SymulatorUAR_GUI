@@ -124,7 +124,7 @@ void Symulator::nextStep()
     //ui->label_wartosc->setNum(obecnaWartosc);
     uklad.setARX(A,B,szum);
     uklad.setPID(ui->spinbox_P->value(),ui->spinbox_I->value(),ui->spinbox_D->value(),ui->spinbox_minimum->value(),ui->spinbox_maksimum->value());
-    uklad.setWartosc(WartoscZadana,ui->spinbox_maksimumY->value(),ui->spinbox_okres->value());
+    uklad.setWartosc(WartoscZadana,ui->spinbox_maksimumY->value(),ui->spinbox_okres->value(), ui->spinBox_wypelnienie->value());
 
 
 
@@ -230,7 +230,7 @@ void Symulator::on_button_reset_clicked()
     uklad.setARX(A, B, szum);
     uklad.setARX(A,B,szum);
     uklad.setPID(ui->spinbox_P->value(),ui->spinbox_I->value(),ui->spinbox_D->value(),ui->spinbox_minimum->value(),ui->spinbox_maksimum->value());
-    uklad.setWartosc(WartoscZadana,ui->spinbox_maksimumY->value(),ui->spinbox_okres->value());
+    uklad.setWartosc(WartoscZadana,ui->spinbox_maksimumY->value(),ui->spinbox_okres->value(), ui->spinBox_wypelnienie->value());
 
     ui->wykres->graph(0)->data()->clear();
     ui->wykres->graph(1)->data()->clear();
@@ -281,7 +281,7 @@ void Symulator::on_button_start_clicked()
     timer->start();
     uklad.setARX(A,B,szum);
     uklad.setPID(ui->spinbox_P->value(),ui->spinbox_I->value(),ui->spinbox_D->value(),ui->spinbox_minimum->value(),ui->spinbox_maksimum->value());
-    uklad.setWartosc(WartoscZadana,ui->spinbox_maksimumY->value(),ui->spinbox_okres->value());
+    uklad.setWartosc(WartoscZadana,ui->spinbox_maksimumY->value(),ui->spinbox_okres->value(), ui->spinBox_wypelnienie->value());
 
 
 }

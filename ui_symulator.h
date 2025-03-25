@@ -78,9 +78,11 @@ public:
     QVBoxLayout *verticalLayout_8;
     QLabel *label_maksimumY;
     QLabel *label_okres;
+    QLabel *label;
     QVBoxLayout *verticalLayout_7;
     QDoubleSpinBox *spinbox_maksimumY;
     QSpinBox *spinbox_okres;
+    QSpinBox *spinBox_wypelnienie;
     QGroupBox *groupBox_UstawieniaFiltra;
     QHBoxLayout *horizontalLayout_11;
     QVBoxLayout *verticalLayout;
@@ -352,6 +354,15 @@ public:
 
         verticalLayout_8->addWidget(label_okres);
 
+        label = new QLabel(groupBox_WartoscZadana);
+        label->setObjectName("label");
+        QFont font3;
+        font3.setPointSize(9);
+        font3.setBold(true);
+        label->setFont(font3);
+
+        verticalLayout_8->addWidget(label);
+
 
         horizontalLayout_12->addLayout(verticalLayout_8);
 
@@ -367,6 +378,14 @@ public:
         spinbox_okres->setObjectName("spinbox_okres");
 
         verticalLayout_7->addWidget(spinbox_okres);
+
+        spinBox_wypelnienie = new QSpinBox(groupBox_WartoscZadana);
+        spinBox_wypelnienie->setObjectName("spinBox_wypelnienie");
+        spinBox_wypelnienie->setMinimum(1);
+        spinBox_wypelnienie->setMaximum(100);
+        spinBox_wypelnienie->setValue(100);
+
+        verticalLayout_7->addWidget(spinBox_wypelnienie);
 
 
         horizontalLayout_12->addLayout(verticalLayout_7);
@@ -511,6 +530,7 @@ public:
         groupBox_WartoscZadana->setTitle(QCoreApplication::translate("Symulator", "Warto\305\233\304\207 Zadana", nullptr));
         label_maksimumY->setText(QCoreApplication::translate("Symulator", "Max Y", nullptr));
         label_okres->setText(QCoreApplication::translate("Symulator", "Okres", nullptr));
+        label->setText(QCoreApplication::translate("Symulator", "Wype\305\202nienie (w %)", nullptr));
         groupBox_UstawieniaFiltra->setTitle(QCoreApplication::translate("Symulator", "Ustawienia filtra", nullptr));
         label_minimum->setText(QCoreApplication::translate("Symulator", "Minimum", nullptr));
         label_maksimum->setText(QCoreApplication::translate("Symulator", "Maksimum", nullptr));

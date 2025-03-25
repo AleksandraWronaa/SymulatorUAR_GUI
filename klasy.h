@@ -182,20 +182,22 @@ enum class rodzajeWartosci
 class WartZadana
 {
 public:
-    WartZadana(rodzajeWartosci typ = rodzajeWartosci::skok, double maximum = 1, int cykl = 20)
+    WartZadana(rodzajeWartosci typ = rodzajeWartosci::skok, double maximum = 1, int cykl = 20, int wyp = 100)
     {
         rodzaj = typ;
         min = 0;
         max = maximum;
         okres = cykl;
+        wypelnienie = wyp;
     };
 
-    void setWart(rodzajeWartosci typ = rodzajeWartosci::skok, double maximum = 1, int cykl = 20)
+    void setWart(rodzajeWartosci typ = rodzajeWartosci::skok, double maximum = 1, int cykl = 20, int wyp = 100)
     {
         rodzaj = typ;
         min = 0;
         max = maximum;
         okres = cykl;
+        wypelnienie = wyp;
     }
 
     double obliczWartosc(int krok)
@@ -206,7 +208,6 @@ public:
         }
         else if (rodzaj == rodzajeWartosci::kwadrat)
         {
-
             if (krok % (okres/2) == 0)
             {
                 minMax = !minMax;
@@ -217,7 +218,11 @@ public:
             }
             else
             {
-                return max;
+                if((krok % (okres/2)) > (okres/2*0.01*wypelnienie))
+                    return min;
+                else
+                    return max;
+
             }
         }
         else
@@ -258,6 +263,7 @@ private:
     double min = -1, max = 1;
     int okres;
     bool minMax = 0;
+    int wypelnienie = 50;
 };
 
 enum class TrybCalkowania {
@@ -417,9 +423,9 @@ public:
         model.setModel(a, b, szum);
     }
 
-    void setWartosc(rodzajeWartosci rodzaj, double max, int okres)
+    void setWartosc(rodzajeWartosci rodzaj, double max, int okres, int wyp)
     {
-        wartosc.setWart(rodzaj, max, okres);
+        wartosc.setWart(rodzaj, max, okres, wyp);
     }
     void setFiltr(bool filtr)
     {

@@ -410,6 +410,19 @@
                    </property>
                   </widget>
                  </item>
+                 <item>
+                  <widget class="QLabel" name="label">
+                   <property name="font">
+                    <font>
+                     <pointsize>9</pointsize>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>Wypełnienie (w %)</string>
+                   </property>
+                  </widget>
+                 </item>
                 </layout>
                </item>
                <item>
@@ -422,6 +435,19 @@
                  </item>
                  <item>
                   <widget class="QSpinBox" name="spinbox_okres"/>
+                 </item>
+                 <item>
+                  <widget class="QSpinBox" name="spinBox_wypelnienie">
+                   <property name="minimum">
+                    <number>1</number>
+                   </property>
+                   <property name="maximum">
+                    <number>100</number>
+                   </property>
+                   <property name="value">
+                    <number>100</number>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </item>
