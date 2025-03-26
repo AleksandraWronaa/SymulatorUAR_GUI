@@ -282,6 +282,7 @@ public:
         calka(0.0), bladPoprzedzajacy(0.0),
         dolnyLimit(dolnyLimit), gornyLimit(gornyLimit),
         flagaPrzeciwNasyceniowa(false),
+        blad(0.0), pochodna(0.0), wyjscie(0.0),
         maxCalka(10.0), maxPochodna(10.0),
         integralMode(mode)
     {
@@ -292,6 +293,7 @@ public:
         calka(0.0), bladPoprzedzajacy(0.0),
         dolnyLimit(-1.0), gornyLimit(1.0),
         flagaPrzeciwNasyceniowa(false),
+        blad(0.0), pochodna(0.0), wyjscie(0.0),
         maxCalka(10.0), maxPochodna(10.0),
         integralMode(TrybCalkowania::POST_SUM)
     {
@@ -344,22 +346,35 @@ public:
         return std::max(lower, std::min(value, upper));
     }
 
-    double oblicz(double ustawWartosc, double wartoscProcesu, double dt) {
+    double oblicz(double ustawWartosc, double wartoscProcesu, double dt)
+    {
         if (dt <= 0.0) {
             dt = 1.0;
         }
+
+        double dtI = (ki != 0.0) ? 2.0 : dt;
+        double dtD = (kd != 0.0) ? 0.5 : dt;
+
         blad = ustawWartosc - wartoscProcesu;
+
         if (integralMode == TrybCalkowania::PRE_SUM) {
-            calka += ki * blad * dt;
+            calka += ki * blad * dtI;
         } else {
-            calka += blad * dt;
+            calka += blad * dtI;
         }
+
         calka = filtr(calka, -maxCalka, maxCalka);
-        pochodna = (blad - bladPoprzedzajacy) / dt;
+
+        pochodna = (blad - bladPoprzedzajacy) / dtD;
         pochodna = filtr(pochodna, -maxPochodna, maxPochodna);
+
         bladPoprzedzajacy = blad;
-        double integralContribution = (integralMode == TrybCalkowania::PRE_SUM) ? calka : ki * calka;
+
+        double integralContribution =
+            (integralMode == TrybCalkowania::PRE_SUM) ? calka : (ki * calka);
+
         wyjscie = kp * blad + integralContribution + kd * pochodna;
+
         if (flagaPrzeciwNasyceniowa) {
             wyjscie = filtr(wyjscie, dolnyLimit, gornyLimit);
         }
